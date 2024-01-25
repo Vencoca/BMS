@@ -1,8 +1,11 @@
-import Sidebar from "@/components/sidebar";
+import MainLayout from "@/components/MainLayout";
+import {Typography} from "@mui/material";
 
 
 export default function Home() {
   return (
-   <Sidebar></Sidebar>
+    <MainLayout>
+      
+    </MainLayout>
   )
 }

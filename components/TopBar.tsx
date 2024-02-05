@@ -6,6 +6,7 @@ import { drawerWidth } from '@/utils/constants';
 import { Box, IconButton, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import LoginWithButton from './LoginWithButton';
+import { useSearchParams } from 'next/navigation';
 
 interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
@@ -35,6 +36,8 @@ interface TopBarProps {
 }
 
 export default function TopBar({ open, buttonOnClick }: TopBarProps) {
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get("callbackUrl") || "/";
     return (
         <AppBar position="fixed" open={open}>
             <Toolbar sx={{
@@ -57,7 +60,7 @@ export default function TopBar({ open, buttonOnClick }: TopBarProps) {
                     <Typography variant="h6" noWrap component="div">
                         BMS
                     </Typography>
-                    <LoginWithButton provider='google' text='Log in' imageSrc='/google.svg' callbackUrl='https://bms-kesler.vercel.app/'></LoginWithButton>
+                    <LoginWithButton provider='google' text='Log in' imageSrc='/google.svg' callbackUrl={ callbackUrl }></LoginWithButton>
                 </Box>
             </Toolbar>
         </AppBar>

@@ -1,12 +1,24 @@
 import Graphs from "@/components/Graphs";
 import MainLayout from "@/components/MainLayout";
-import {Typography} from "@mui/material";
+import { authOptions } from "@/utils/auth";
+import { getServerSession } from "next-auth";
+import { use } from "react";
 
+
+async function getUser() {
+  const session = await getServerSession(authOptions);
+  return session?.user;
+}
 
 export default function Home() {
+  const user = use(getUser());
   return (
     <MainLayout>
-      <Graphs></Graphs>
+      {!user ? (
+        <p>You must login first</p>
+      ) : (
+        <Graphs></Graphs>
+      )}
     </MainLayout>
   )
 }

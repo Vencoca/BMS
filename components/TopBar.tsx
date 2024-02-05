@@ -3,8 +3,9 @@
 import { styled } from '@mui/material/styles';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import { drawerWidth } from '@/utils/constants';
-import { IconButton, Toolbar, Typography } from '@mui/material';
+import { Box, IconButton, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import LoginWithButton from './LoginWithButton';
 
 interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
@@ -52,9 +53,12 @@ export default function TopBar({ open, buttonOnClick }: TopBarProps) {
                 >
                     <MenuIcon />
                 </IconButton>
-                <Typography variant="h6" noWrap component="div">
-                    BMS
-                </Typography>
+                <Box sx={{display: 'flex', gap: '16px', alignItems: 'center'}}>
+                    <Typography variant="h6" noWrap component="div">
+                        BMS
+                    </Typography>
+                    <LoginWithButton provider='google' text='Log in' imageSrc='/google.svg' callbackUrl='/'></LoginWithButton>
+                </Box>
             </Toolbar>
         </AppBar>
     )

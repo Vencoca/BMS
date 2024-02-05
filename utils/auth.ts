@@ -6,7 +6,7 @@ import GoogleProvider from "next-auth/providers/google";
 export const authOptions: NextAuthOptions = {
   // Customize authentication pages
   pages: {
-    signIn: "/login", // Redirect users to "/login" when signing in
+    signIn: "/", // Redirect users to "/login" when signing in
   },
   // Configure session management
   session: {

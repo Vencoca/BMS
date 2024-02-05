@@ -57,7 +57,7 @@ export default function TopBar({ open, buttonOnClick }: TopBarProps) {
                     <Typography variant="h6" noWrap component="div">
                         BMS
                     </Typography>
-                    <LoginWithButton provider='google' text='Log in' imageSrc='/google.svg' callbackUrl='/'></LoginWithButton>
+                    <LoginWithButton provider='google' text='Log in' imageSrc='/google.svg' callbackUrl='https://bms-kesler.vercel.app/'></LoginWithButton>
                 </Box>
             </Toolbar>
         </AppBar>

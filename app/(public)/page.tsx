@@ -1,5 +1,6 @@
 import Graphs from "@/components/Graphs";
 import MainLayout from "@/components/MainLayout";
+import UserContext from "@/components/UserContext";
 import { authOptions } from "@/utils/auth";
 import { getServerSession } from "next-auth";
 import { use } from "react";
@@ -11,14 +12,10 @@ async function getUser() {
 }
 
 export default function Home() {
-  const user = use(getUser());
+  const user = use(getUser())
   return (
-    <MainLayout>
-      {!user ? (
-        <p>You must login first</p>
-      ) : (
+      <MainLayout user={user}>
         <Graphs></Graphs>
-      )}
-    </MainLayout>
+      </MainLayout>
   )
 }

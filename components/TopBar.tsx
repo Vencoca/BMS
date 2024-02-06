@@ -7,6 +7,9 @@ import { Box, IconButton, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import LoginWithButton from './LoginWithButton';
 import { useSearchParams } from 'next/navigation';
+import LogoutButton from './LogoutButton';
+import { useContext } from 'react';
+import UserContext from './UserContext';
 
 interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
@@ -38,6 +41,7 @@ interface TopBarProps {
 export default function TopBar({ open, buttonOnClick }: TopBarProps) {
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get("callbackUrl") || "/";
+    const userCtx = useContext(UserContext);
     return (
         <AppBar position="fixed" open={open}>
             <Toolbar sx={{
@@ -60,7 +64,11 @@ export default function TopBar({ open, buttonOnClick }: TopBarProps) {
                     <Typography variant="h6" noWrap component="div">
                         BMS
                     </Typography>
-                    <LoginWithButton provider='google' text='Log in' imageSrc='/google.svg' callbackUrl={ callbackUrl }></LoginWithButton>
+                    {!userCtx.user ? (
+                        <LoginWithButton provider='google' text='Log in' imageSrc='/google.svg' callbackUrl={ callbackUrl }></LoginWithButton>
+                    ) : (
+                        <LogoutButton/>     
+                    )}
                 </Box>
             </Toolbar>
         </AppBar>

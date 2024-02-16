@@ -1,14 +1,14 @@
 "use client"
 
 import { Box, useTheme } from "@mui/material";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 import Sidebar, { DrawerHeader } from "./Sidebar";
 import TopBar from "./TopBar";
 import UserContext from "./UserContext";
 
 export default function MainLayout({ children, user }: { children?: ReactNode, user: any }) {
     const theme = useTheme();
-    const [openDrawer, setOpenDrawer] = React.useState(false);
+    const [openDrawer, setOpenDrawer] = useState(false);
 
     function openDrawerHandler() {
         setOpenDrawer(true);
@@ -17,7 +17,6 @@ export default function MainLayout({ children, user }: { children?: ReactNode, u
     function closeDrawerHandler() {
         setOpenDrawer(false);
     }
-    console.log(user)
     return (
         <UserContext.Provider value={{ user: user }}>
             <Box sx={{ display: 'flex' }}>

@@ -12,13 +12,13 @@ export default function RegisterPage() {
             <AuthCard>
                 <RegisterFrom></RegisterFrom>
                 <Typography variant="body1" component="p" textAlign={"center"}>Already have an account?&nbsp;
-                    <NextLink href="/login"><Link underline="hover">
-                        {"Singup"}
-                    </Link></NextLink>
+                    <Link component={NextLink} href="/login" underline="hover">
+                        {"Login"}
+                    </Link>
                 </Typography>
             </AuthCard>
             <Box sx={{ position: "absolute", width: "100%", height: "100%", zIndex: "-1" }}>
-                <Image width={1920} height={1080} style={{display:"block", width:"100%", height:"100%", objectFit:"cover"}} src='/loginBackground.jpg' alt="Building"></Image>
+                <Image width={1920} height={1080} style={{ display: "block", width: "100%", height: "100%", objectFit: "cover" }} src='/loginBackground.jpg' alt="Building"></Image>
             </Box>
         </Box>
     )

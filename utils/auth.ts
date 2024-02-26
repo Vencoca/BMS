@@ -1,26 +1,70 @@
 import type { NextAuthOptions } from "next-auth";
-import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { connectMongoDB } from "./mongodb";
+import User from "@/models/user";
+import bcrypt from "bcryptjs"
 
-// Define authentication options using NextAuthOptions interface
 export const authOptions: NextAuthOptions = {
-  // Customize authentication pages
   pages: {
-    signIn: "/", // Redirect users to "/login" when signing in
+    signIn: "/login", // Redirect users to "/login" when signing in
   },
-  // Configure session management
   session: {
     strategy: "jwt", // Use JSON Web Tokens (JWT) for session management
   },
-  // added secret key
-   secret: process.env.NEXT_PUBLIC_SECRET,
-  // Configure authentication providers
+  secret: process.env.NEXT_SECRET,
   providers: [
     GoogleProvider({
-      // Configure Google authentication provider with environment variables
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+
     }),
-    // CredentialsProvider({}), // Include a Credentials provider (username/password)
+    CredentialsProvider({
+      name: "credentials",
+      credentials: {},
+      async authorize(credentials: any) {
+        const { email, password } = credentials
+        try {
+          await connectMongoDB();
+          const user = await User.findOne({ email })
+          if (!user) {
+            return null
+          }
+          const passwordMatch = await bcrypt.compare(password, user?.password)
+          if (!passwordMatch) {
+            return null
+          }
+          return user
+        } catch (error) {
+          console.log(error)
+        }
+        return null;
+      }
+    }),
   ],
+  callbacks: {
+    async session({ session }) {
+      return session;
+    },
+    async signIn({ profile }: any) {
+      try {
+        if (profile?.email) {
+          await connectMongoDB();
+          const userExist = await User.findOne({ "email": profile.email })
+          if (!userExist) {
+            const user = await User.create({
+              name: profile.name,
+              email: profile.email,
+              password: '',
+            })
+          }
+        }
+        return true
+      } catch (error) {
+        console.log(error)
+        return false
+      }
+
+    }
+  }
 };

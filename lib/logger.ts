@@ -9,9 +9,9 @@ class Logger {
     }
   
     static debug(...args: any[]) {
-      if (process.env.DEBUG) {
+      // if (process.env.DEBUG) {
         this.logWithTimestamp('DEBUG', ...args);
-      }
+      // }
     }
   
     static info(...args: any[]) {

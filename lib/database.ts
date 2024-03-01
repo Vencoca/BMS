@@ -1,40 +1,47 @@
-import { connect, ConnectOptions, Mongoose, set } from "mongoose";
-import Logger from "./logger";
+import mongoose from "mongoose";
 
 declare global {
-  var mongoose: undefined | Mongoose;
-  var __MONGO_URI__: string;
+  var mongoose: any;
 }
 
-const opts: ConnectOptions = {};
+let cached = global.mongoose;
 
-async function setupMongoDb() {
-  let MONGODB_URI = process.env.MONGODB_URI as string;
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
 
+export default async function connectToMongoDB() {
+  const MONGODB_URI = process.env.MONGODB_URI!;
   if (!MONGODB_URI) {
     throw new Error(
-      "Please define the MONGODB_URI for connection to mongo database."
+      "Please define the MONGODB_URI environment variable inside .env.local",
     );
   }
 
-  set("strictQuery", true);
-
-  if (process.env.MONGO_DEBUG) {
-    set("debug", true);
+  if (cached.conn) {
+    return cached.conn;
   }
-
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false,
+    };
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+      return mongoose;
+    });
+  }
   try {
-    if (!(global as any).mongoose) {
-      Logger.debug("Creating new Mongoose Connection.");
-      (global as any).mongoose = await connect(MONGODB_URI, opts);
-    }
-    Logger.debug("Mongoose connected successfully.");
-    return (global as any).mongoose;
-  } catch (e: any) {
-    Logger.error("Mongoose connection failed.");
-    Logger.error(e?.message || e, ` || URI: ${MONGODB_URI}`);
-    throw new Error(e?.message || e);
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    throw e;
   }
+
+  return cached.conn;
 }
 
-export default setupMongoDb;
+export async function closeMongoDBConnection() {
+  if (cached.conn) {
+    mongoose?.connection.close();
+    cached.conn = null;
+  }
+}

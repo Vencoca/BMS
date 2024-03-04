@@ -1,5 +1,5 @@
 // middleware/checkEndpointRole.js
-import { roles } from '../utils/roles';
+import { roles } from '../lib/roles';
 
 // const checkEndpointRole = (requiredRole) => async (req, res, next) => {
 //     const userId = req.user._id;

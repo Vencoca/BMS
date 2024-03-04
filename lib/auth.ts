@@ -1,9 +1,9 @@
-import type { NextAuthOptions } from "next-auth";
+import type { NextAuthOptions, User} from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { connectMongoDB } from "./mongodb";
-import User from "@/models/user";
-import bcrypt from "bcryptjs"
+import { connectToMongoDB } from "./database";
+import { comparePasswordWithUserPassword, createUser, fetchUserByEmail, userExists } from "./services/user";
+import Logger from "./logger";
 
 export const authOptions: NextAuthOptions = {
   pages: {
@@ -22,21 +22,17 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {},
-      async authorize(credentials: any) {
+      async authorize(credentials: any,) {
         const { email, password } = credentials
         try {
-          await connectMongoDB();
-          const user = await User.findOne({ email })
-          if (!user) {
+          await connectToMongoDB();
+          const user = await fetchUserByEmail(email) 
+          if (!comparePasswordWithUserPassword(user,password)) {
             return null
           }
-          const passwordMatch = await bcrypt.compare(password, user?.password)
-          if (!passwordMatch) {
-            return null
-          }
-          return user
+          return user as User
         } catch (error) {
-          console.log(error)
+          Logger.error(error)
         }
         return null;
       }
@@ -49,10 +45,9 @@ export const authOptions: NextAuthOptions = {
     async signIn({ profile }: any) {
       try {
         if (profile?.email) {
-          await connectMongoDB();
-          const userExist = await User.findOne({ "email": profile.email })
-          if (!userExist) {
-            const user = await User.create({
+          await connectToMongoDB();
+          if (!userExists(profile.email)) {
+            createUser({
               name: profile.name,
               email: profile.email,
               password: '',
@@ -61,7 +56,7 @@ export const authOptions: NextAuthOptions = {
         }
         return true
       } catch (error) {
-        console.log(error)
+        Logger.error(error)
         return false
       }
 

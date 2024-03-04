@@ -28,7 +28,7 @@ export default function RegisterFrom() {
     const onSubmit: SubmitHandler<Form> = async (data) => {
         setRegistering(true)
         try {
-            const res = await fetch('api/register', {
+            const res = await fetch('api/users', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"

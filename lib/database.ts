@@ -10,7 +10,7 @@ if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
 
-export default async function connectToMongoDB() {
+export async function connectToMongoDB() {
   const MONGODB_URI = process.env.MONGODB_URI!;
   if (!MONGODB_URI) {
     throw new Error(
@@ -45,3 +45,5 @@ export async function closeMongoDBConnection() {
     cached.conn = null;
   }
 }
+
+export default connectToMongoDB

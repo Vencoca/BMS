@@ -1,10 +1,11 @@
 import usersMock from "../mocks/users.json";
-import { fetchUsers } from "../user";
+import { createUser, deleteUser, fetchUser, fetchUserByEmail, fetchUsers, updateUser } from "../user";
 import { Mongoose } from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import seedDB from "./seedDB";
+import User from "@/models/user";
 
-describe("Users Test", () => {
+describe("Users methods tests", () => {
     let mongoose: Mongoose;
     let mongodb: MongoMemoryServer;
     let testData: Map<string, any>;
@@ -17,9 +18,115 @@ describe("Users Test", () => {
         await mongoose?.connection.close();
     });
 
-    test("createUsers test (seeding)", async () => {
-        let test = await fetchUsers();
-        expect(test).toHaveLength(usersMock.length);
-        expect(testData.get("users")).toHaveLength(usersMock.length);
+    describe("fetchUsers", () => {
+        test("fetchUsers (seeding)", async () => {
+            let users = await fetchUsers();
+            expect(users).toHaveLength(usersMock.length);
+            expect(testData.get("users")).toHaveLength(usersMock.length);
+        });
+
+        test("Error fetching users", async () => {
+            jest.spyOn(User, 'find').mockImplementationOnce(() => {
+                throw new Error("MongoDB connection error");
+            });
+            await expect(fetchUsers()).rejects.toThrow("Error fetching users: MongoDB connection error");
+        });
     });
+
+    describe('fetchUser', () => {
+        test('Fetch existing user by ID', async () => {
+            const existingUserId = testData.get("users")[0]._id;
+            expect(existingUserId).toBeDefined();
+
+            const fetchedUser = await fetchUser(existingUserId);
+
+            expect(fetchedUser).toBeDefined();
+            expect(fetchedUser._id).toStrictEqual(existingUserId);
+        });
+
+        test('Error fetching nonexisting user by ID', async () => {
+            const nonExistingUserId = new mongoose.Types.ObjectId();
+
+            await expect(fetchUser(nonExistingUserId)).rejects.toThrow('User not found');
+        });
+    });
+
+    describe('fetchUserByEmail', () => {
+        test('Fetch existing user by email', async () => {
+            const existingUserEmail = testData.get("users")[0].email;
+            expect(existingUserEmail).toBeDefined();
+
+            const fetchedUser = await fetchUserByEmail(existingUserEmail);
+
+            expect(fetchedUser).toBeDefined();
+            expect(fetchedUser.email).toBe(existingUserEmail);
+        });
+
+        test('Error fetching nonexisting user by email', async () => {
+            const nonExistingUserEmail = 'nonexistinguser@example.com';
+
+            await expect(fetchUserByEmail(nonExistingUserEmail)).rejects.toThrow('User not found');
+        });
+    });
+
+    describe('createUser', () => {
+        test('Create user', async () => {
+            const newUser = {
+                name: 'New User',
+                email: 'newuser@example.com',
+                password: 'password123',
+            };
+
+            const createdUser = await createUser(newUser);
+
+            expect(createdUser).toBeDefined();
+            expect(createdUser.name).toBe(newUser.name);
+            expect(createdUser.email).toBe(newUser.email);
+        });
+
+        test('Error creating user (incomplete data)', async () => {
+            const invalidUser = {
+                name: 'Invalid User',
+            };
+
+            await expect(createUser(invalidUser)).rejects.toThrow('Error creating user: User validation failed: email: Path `email` is required.');
+        });
+    });
+
+    describe('updateUser', () => {
+        test('Update existing user', async () => {
+            const existingUserId = testData.get("users")[0]._id;
+            expect(existingUserId).toBeDefined();
+            const updates = { name: 'Updated Name' };
+
+            const updatedUser = await updateUser(existingUserId, updates);
+
+            expect(updatedUser).toBeDefined();
+            expect(updatedUser.name).toBe(updates.name);
+        });
+
+        test('Error updating nonexisting user', async () => {
+            const nonExistingUserId = new mongoose.Types.ObjectId();;
+            const updates = { name: 'Updated Name' };
+
+            await expect(updateUser(nonExistingUserId, updates)).rejects.toThrow('User not found');
+        });
+    });
+
+    describe('deleteUser', () => {
+        test('Delete existing user', async () => {
+            const existingUserId = testData.get("users")[0]._id;
+            expect(existingUserId).toBeDefined();
+            const deletedUser = await deleteUser(existingUserId);
+
+            expect(deletedUser).toBeDefined();
+            expect(deletedUser._id).toStrictEqual(existingUserId);
+        });
+
+        test('Error deleting nonexisting user', async () => {
+            const nonExistingUserId = new mongoose.Types.ObjectId();
+            await expect(deleteUser(nonExistingUserId)).rejects.toThrow('User not found');
+        });
+    });
+
 });

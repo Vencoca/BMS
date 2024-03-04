@@ -1,7 +1,7 @@
 import Graphs from "@/components/Graphs";
 import MainLayout from "@/components/MainLayout";
 import UserContext from "@/components/UserContext";
-import { authOptions } from "@/utils/auth";
+import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { use } from "react";
 

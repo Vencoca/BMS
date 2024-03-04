@@ -7,7 +7,7 @@ import { createEndpointUser, fetchEndpointUsers } from "../endpointUser";
 import connectToMongoDB from "@/lib/database";
 import { Mongoose } from "mongoose";
 
-export default async function seedDB() : Promise<[MongoMemoryServer, Mongoose, Map<string, any>]> {
+export default async function seedDB(): Promise<[MongoMemoryServer, Mongoose, Map<string, any>]> {
     const [mongodb, mongoose] = await prepare();
 
     await Promise.all([seedEndpoints(), seedUsers()]);
@@ -23,7 +23,7 @@ export default async function seedDB() : Promise<[MongoMemoryServer, Mongoose, M
     return [mongodb, mongoose, testData];
 }
 
-async function prepare() : Promise<[MongoMemoryServer, Mongoose]> {
+async function prepare(): Promise<[MongoMemoryServer, Mongoose]> {
     const mongodb = new MongoMemoryServer();
     await mongodb.start();
     process.env.MONGODB_URI = mongodb.getUri();
@@ -43,11 +43,11 @@ async function seedUsers() {
 
 async function seedEndpointUsers(endpoints: any[], users: any[]) {
     const endpointUserPromises = [];
-    for (let i = users.length - 1; i >= 0; i--) {
+    for (let i = 0; i < users.length; i++) {
         const user = users[i];
-        const numberOfEndpoints = Math.min(i, endpoints.length);
-        for (let j = 0; j < numberOfEndpoints; j++) {
+        for (let j = 0; j < endpoints.length; j++) {
             const endpoint = endpoints[j];
+
             const endpointUserData = {
                 user: user._id,
                 endpoint: endpoint._id,
@@ -56,5 +56,6 @@ async function seedEndpointUsers(endpoints: any[], users: any[]) {
             endpointUserPromises.push(createEndpointUser(endpointUserData));
         }
     }
+
     await Promise.all(endpointUserPromises);
 }

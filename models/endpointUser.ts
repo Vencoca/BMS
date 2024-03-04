@@ -1,4 +1,4 @@
-import { roles } from "@/utils/roles";
+import { roles } from "@/lib/roles";
 import mongoose, { Schema, models, Document } from "mongoose";
 import { IUser } from "./user";
 import { IEndpoint } from "./endpoint";

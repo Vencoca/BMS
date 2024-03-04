@@ -1,16 +1,55 @@
+import mongoose from "mongoose";
 import Endpoint, { IEndpoint } from "@/models/endpoint";
 
-export const fetchEndpoints = () => Endpoint.find({});
+export async function fetchEndpoints(): Promise<IEndpoint[]> {
+  try {
+    return await Endpoint.find({});
+  } catch (error) {
+    throw new Error(`Error fetching endpoints: ${(error as Error).message}`);
+  }
+}
 
-export const fetchEndpoint = (id: string) => Endpoint.findById(id);
+export async function fetchEndpoint(id: mongoose.Types.ObjectId): Promise<IEndpoint> {
+  try {
+    const endpoint = await Endpoint.findById(id);
+    if (!endpoint) {
+      throw new Error("Endpoint not found");
+    }
+    return endpoint;
+  } catch (error) {
+    throw new Error(`Error fetching endpoint: ${(error as Error).message}`);
+  }
+}
 
-export const createEndpoint = ({ url, secret }: Partial<IEndpoint>) => {
-  const endpoint = new Endpoint({ url, secret });
-  return endpoint.save();
-};
+export async function createEndpoint({ url, secret }: Partial<IEndpoint>): Promise<IEndpoint> {
+  try {
+    const endpoint = new Endpoint({ url, secret });
+    return await endpoint.save();
+  } catch (error) {
+    throw new Error(`Error creating endpoint: ${(error as Error).message}`);
+  }
+}
 
-export const updateEndpoint = (id: string, updates: Partial<IEndpoint>) =>
-  Endpoint.findByIdAndUpdate(id, updates, { new: true }).exec();
+export async function updateEndpoint(id: mongoose.Types.ObjectId, updates: Partial<IEndpoint>): Promise<IEndpoint> {
+  try {
+    const endpoint = await Endpoint.findByIdAndUpdate(id, updates, { new: true }).exec();
+    if (!endpoint) {
+      throw new Error("Endpoint not found");
+    }
+    return endpoint;
+  } catch (error) {
+    throw new Error(`Error updating endpoint: ${(error as Error).message}`);
+  }
+}
 
-export const deleteEndpoint = (id: string) =>
-  Endpoint.findByIdAndDelete(id, { new: true }).exec();
+export async function deleteEndpoint(id: mongoose.Types.ObjectId): Promise<IEndpoint> {
+  try {
+    const endpoint = await Endpoint.findByIdAndDelete(id, { new: true }).exec();
+    if (!endpoint) {
+      throw new Error("Endpoint not found");
+    }
+    return endpoint;
+  } catch (error) {
+    throw new Error(`Error deleting endpoint: ${(error as Error).message}`);
+  }
+}

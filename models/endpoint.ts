@@ -1,21 +1,25 @@
-import mongoose, { Schema, models, Document } from "mongoose";
+import mongoose, { Document, models, Schema } from "mongoose";
 
-export interface IEndpoint extends Document{
-    url: string,
-    secret: string
+export interface IEndpoint extends Document {
+  url: string;
+  apiKey: string;
 }
 
-const EndpointSchema = new Schema<IEndpoint>({
+const EndpointSchema = new Schema<IEndpoint>(
+  {
     url: {
-        type: String,
-        unique: true,
-        required: true,
+      type: String,
+      unique: true,
+      required: true,
     },
-    secret: {
-        type: String,
-        required: true,
+    apiKey: {
+      type: String,
+      required: true,
     },
-}, { timestamps: true})
+  },
+  { timestamps: true },
+);
 
-export const Endpoint = models.endpoint|| mongoose.model("Endpoint", EndpointSchema);
-export default Endpoint
+export const Endpoint =
+  models.endpoint || mongoose.model("Endpoint", EndpointSchema);
+export default Endpoint;

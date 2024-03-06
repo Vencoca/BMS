@@ -1,9 +1,15 @@
-import type { NextAuthOptions, User} from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import type { NextAuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+
 import { connectToMongoDB } from "./database";
-import { comparePasswordWithUserPassword, createUser, fetchUserByEmail, userExists } from "./services/user";
 import Logger from "./logger";
+import {
+  comparePasswordWithUserPassword,
+  createUser,
+  fetchUserByEmail,
+  userExists,
+} from "./services/user";
 
 export const authOptions: NextAuthOptions = {
   pages: {
@@ -17,25 +23,24 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-
     }),
     CredentialsProvider({
       name: "credentials",
       credentials: {},
-      async authorize(credentials: any,) {
-        const { email, password } = credentials
+      async authorize(credentials: any) {
+        const { email, password } = credentials;
         try {
           await connectToMongoDB();
-          const user = await fetchUserByEmail(email) 
-          if (!comparePasswordWithUserPassword(user,password)) {
-            return null
+          const user = await fetchUserByEmail(email);
+          if (!comparePasswordWithUserPassword(user, password)) {
+            return null;
           }
-          return user as User
+          return user as User;
         } catch (error) {
-          Logger.error(error)
+          Logger.error(error);
         }
         return null;
-      }
+      },
     }),
   ],
   callbacks: {
@@ -50,16 +55,15 @@ export const authOptions: NextAuthOptions = {
             createUser({
               name: profile.name,
               email: profile.email,
-              password: '',
-            })
+              password: "",
+            });
           }
         }
-        return true
+        return true;
       } catch (error) {
-        Logger.error(error)
-        return false
+        Logger.error(error);
+        return false;
       }
-
-    }
-  }
+    },
+  },
 };

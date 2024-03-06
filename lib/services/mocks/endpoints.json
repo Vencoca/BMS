@@ -1,15 +1,14 @@
 [
-    {
-      "url": "https://api.example.com/endpoint1",
-      "secret": "s3cr3t1"
-    },
-    {
-      "url": "https://api.example.com/endpoint2",
-      "secret": "s3cr3t2"
-    },
-    {
-      "url": "https://api.example.com/endpoint3",
-      "secret": "s3cr3t3"
-    }
-  ]
-  
+  {
+    "url": "https://api.example.com/endpoint1",
+    "apiKey": "s3cr3t1"
+  },
+  {
+    "url": "https://api.example.com/endpoint2",
+    "apiKey": "s3cr3t2"
+  },
+  {
+    "url": "https://api.example.com/endpoint3",
+    "apiKey": "s3cr3t3"
+  }
+]

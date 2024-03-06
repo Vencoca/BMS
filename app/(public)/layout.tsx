@@ -1,20 +1,25 @@
-import type { Metadata } from 'next'
-import '@/app/globals.css'
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-import Head from 'next/head';
-import { CssBaseline } from '@mui/material';
-import { AuthProvider } from '@/components/Providers';
+import "@/app/globals.css";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
+import { CssBaseline } from "@mui/material";
+import type { Metadata } from "next";
+import Head from "next/head";
+
+import { AuthProvider } from "@/components/Providers";
 
 export const metadata: Metadata = {
-  title: 'BMS',
-  description: 'Building managment system',
-}
+  title: "BMS",
+  description: "Building managment system",
+};
 
-export default function RootLayout({ children, }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <Head>
@@ -22,9 +27,8 @@ export default function RootLayout({ children, }: { children: React.ReactNode })
       </Head>
       <CssBaseline />
       <body>
-        <AuthProvider>{children}
-        </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
-  )
+  );
 }

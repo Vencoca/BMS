@@ -1,9 +1,4 @@
-export default function CreateEndpoint(){
-  
-}
-
-
-
+export default function CreateEndpoint() {}
 
 // import * as React from 'react';
 // import Box from '@mui/material/Box';

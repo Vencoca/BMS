@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 declare global {
+  // eslint-disable-next-line unused-imports/no-unused-vars
   var mongoose: any;
 }
 
@@ -46,4 +47,4 @@ export async function closeMongoDBConnection() {
   }
 }
 
-export default connectToMongoDB
+export default connectToMongoDB;

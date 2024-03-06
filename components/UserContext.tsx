@@ -1,10 +1,9 @@
-"use client"
+"use client";
 
 import { createContext } from "react";
 
 const UserContext = createContext({
-    user: {}
-})
-
+  user: {},
+});
 
 export default UserContext;

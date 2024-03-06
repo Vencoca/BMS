@@ -1,6 +1,7 @@
-import User, { IUser } from "@/models/user";
+import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs"
+
+import User, { IUser } from "@/models/user";
 
 export async function fetchUsers(): Promise<IUser[]> {
   try {
@@ -30,11 +31,17 @@ export async function fetchUserByEmail(email: string): Promise<IUser> {
     }
     return user;
   } catch (error) {
-    throw new Error(`Error fetching user by email: ${(error as Error).message}`);
+    throw new Error(
+      `Error fetching user by email: ${(error as Error).message}`,
+    );
   }
 }
 
-export async function createUser({ name, email, password }: Partial<IUser>): Promise<IUser> {
+export async function createUser({
+  name,
+  email,
+  password,
+}: Partial<IUser>): Promise<IUser> {
   try {
     const user = new User({ name, email, password });
     return await user.save();
@@ -43,9 +50,13 @@ export async function createUser({ name, email, password }: Partial<IUser>): Pro
   }
 }
 
-export async function createUserWithHashedPassword({ name, email, password }: Partial<IUser>): Promise<IUser> {
+export async function createUserWithHashedPassword({
+  name,
+  email,
+  password,
+}: Partial<IUser>): Promise<IUser> {
   try {
-    const hashedPassword = await bcrypt.hash(password as string, 10)
+    const hashedPassword = await bcrypt.hash(password as string, 10);
     const user = new User({ name, email, hashedPassword });
     return await user.save();
   } catch (error) {
@@ -53,7 +64,10 @@ export async function createUserWithHashedPassword({ name, email, password }: Pa
   }
 }
 
-export async function comparePasswordWithUserPassword({ email, password }: Partial<IUser>, passwordToCompare: string) {
+export async function comparePasswordWithUserPassword(
+  { email, password }: Partial<IUser>,
+  passwordToCompare: string,
+) {
   try {
     if (!password) {
       if (!email) {
@@ -61,19 +75,24 @@ export async function comparePasswordWithUserPassword({ email, password }: Parti
       }
       password = (await fetchUserByEmail(email)).password;
     }
-    return await bcrypt.compare(password, passwordToCompare)
+    return await bcrypt.compare(password, passwordToCompare);
   } catch (error) {
     throw new Error(`Error comparing passwords: ${(error as Error).message}`);
   }
 }
 
 export async function userExists({ email }: Partial<IUser>) {
-  return await User.findOne({ "email": email });
+  return await User.findOne({ email: email });
 }
 
-export async function updateUser(id: mongoose.Types.ObjectId, updates: Partial<IUser>): Promise<IUser> {
+export async function updateUser(
+  id: mongoose.Types.ObjectId,
+  updates: Partial<IUser>,
+): Promise<IUser> {
   try {
-    const user = await User.findByIdAndUpdate(id, updates, { new: true }).exec();
+    const user = await User.findByIdAndUpdate(id, updates, {
+      new: true,
+    }).exec();
     if (!user) {
       throw new Error("User not found");
     }

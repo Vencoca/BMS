@@ -1,22 +1,19 @@
 import "@/app/globals.css";
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
 
 import { CssBaseline } from "@mui/material";
 import type { Metadata } from "next";
 import Head from "next/head";
 
 import { AuthProvider } from "@/components/Providers";
+import { UserCtxProvider } from "@/components/UserContext";
 
 export const metadata: Metadata = {
   title: "BMS",
-  description: "Building managment system",
+  description: "Building managment system"
 };
 
 export default function RootLayout({
-  children,
+  children
 }: {
   children: React.ReactNode;
 }) {
@@ -27,7 +24,9 @@ export default function RootLayout({
       </Head>
       <CssBaseline />
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <UserCtxProvider>{children}</UserCtxProvider>
+        </AuthProvider>
       </body>
     </html>
   );

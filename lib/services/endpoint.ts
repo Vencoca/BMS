@@ -13,7 +13,7 @@ export async function fetchEndpoints(): Promise<IEndpoint[]> {
 }
 
 export async function fetchEndpoint(
-  id: mongoose.Types.ObjectId,
+  id: mongoose.Types.ObjectId
 ): Promise<IEndpoint> {
   try {
     const endpoint = await Endpoint.findById(id);
@@ -27,9 +27,21 @@ export async function fetchEndpoint(
   }
 }
 
+export async function fetchEndpointByUrl(url: IEndpoint["url"]) {
+  try {
+    const endpoint = await Endpoint.findOne({ url });
+    if (!endpoint) {
+      throw new Error("Endpoint not found");
+    }
+    return endpoint;
+  } catch (error) {
+    throw new Error(`Error fetching Endpoint: ${(error as Error).message}`);
+  }
+}
+
 export async function createEndpoint({
   url,
-  apiKey,
+  apiKey
 }: Partial<IEndpoint>): Promise<IEndpoint> {
   try {
     if (apiKey == undefined) {
@@ -45,11 +57,11 @@ export async function createEndpoint({
 
 export async function updateEndpoint(
   id: mongoose.Types.ObjectId,
-  updates: Partial<IEndpoint>,
+  updates: Partial<IEndpoint>
 ): Promise<IEndpoint> {
   try {
     const endpoint = await Endpoint.findByIdAndUpdate(id, updates, {
-      new: true,
+      new: true
     }).exec();
     if (!endpoint) {
       throw new Error("Endpoint not found");
@@ -61,7 +73,7 @@ export async function updateEndpoint(
 }
 
 export async function deleteEndpoint(
-  id: mongoose.Types.ObjectId,
+  id: mongoose.Types.ObjectId
 ): Promise<IEndpoint> {
   try {
     const endpoint = await Endpoint.findByIdAndDelete(id, { new: true }).exec();

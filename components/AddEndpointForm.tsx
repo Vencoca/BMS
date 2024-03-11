@@ -1,40 +1,74 @@
-/* eslint-disable unused-imports/no-unused-vars */
 import {
   Alert,
   Box,
   Button,
   CircularProgress,
   Snackbar,
-  TextField,
+  TextField
 } from "@mui/material";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
+import { testConnection } from "@/lib/workWithEndpoint";
+
+import { useUserContext } from "./UserContext";
+
 interface Form {
   url: string;
-  secret: string;
+  apiKey: string;
 }
 
 export default function AddEndpointForm() {
   const [apiInProgress, setApiInProgress] = useState(false);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
+  const { user } = useUserContext();
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    reset,
+    formState: { errors }
   } = useForm({
     defaultValues: {
       url: "",
-      secret: "",
+      apiKey: ""
     },
-    mode: "onBlur",
+    mode: "onBlur"
   });
   const handleClose = () => {
     setOpen(false);
   };
+
   const onSubmit: SubmitHandler<Form> = async (data) => {
-    console.log(data);
+    try {
+      setApiInProgress(true);
+      const endpoint = {
+        url: data.url,
+        apiKey: data.apiKey
+      };
+      const workingConnection = await testConnection(endpoint);
+      if (!workingConnection) {
+        throw new Error("Cant establish connection to endpoit!");
+      }
+      const res = await fetch("api/endpoints", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ endpoint: endpoint, user: user })
+      });
+      const resJson = await res.json();
+      if (res.ok) {
+        reset();
+      } else {
+        throw new Error(resJson.message);
+      }
+    } catch (error: any) {
+      setError(error.message || "Internal server error");
+      setOpen(true);
+    } finally {
+      setApiInProgress(false);
+    }
   };
 
   return (
@@ -47,7 +81,7 @@ export default function AddEndpointForm() {
           name="url"
           control={control}
           rules={{
-            required: { value: true, message: "Url is required!" },
+            required: { value: true, message: "Url is required!" }
           }}
           render={({ field }) => (
             <TextField
@@ -59,16 +93,16 @@ export default function AddEndpointForm() {
           )}
         />
         <Controller
-          name="secret"
+          name="apiKey"
           control={control}
           rules={{
-            required: { value: true, message: "Secret is required!" },
+            required: { value: true, message: "apiKey is required!" }
           }}
           render={({ field }) => (
             <TextField
               {...field}
-              error={errors["secret"] && true}
-              label={errors["secret"]?.message || "Secret"}
+              error={errors["apiKey"] && true}
+              label={errors["apiKey"]?.message || "apiKey"}
               type={"password"}
               variant="outlined"
             />

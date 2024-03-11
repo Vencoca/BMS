@@ -6,6 +6,8 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
+import Logger from "@/lib/logger";
+
 interface Form {
   email: string;
   password: string;
@@ -15,8 +17,8 @@ export default function RegisterFrom() {
   const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
-      password: "",
-    },
+      password: ""
+    }
   });
 
   const [error, setError] = useState("");
@@ -33,7 +35,7 @@ export default function RegisterFrom() {
       const res = await signIn("credentials", {
         email,
         password,
-        redirect: false,
+        redirect: false
       });
       if (res?.error) {
         setError("Invalid Credentials");
@@ -42,7 +44,7 @@ export default function RegisterFrom() {
       }
       router.replace("dashboard");
     } catch (error) {
-      console.log(error);
+      Logger.error(error);
     }
   };
 

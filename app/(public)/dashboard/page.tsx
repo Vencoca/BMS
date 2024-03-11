@@ -2,13 +2,13 @@
 
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
 
 import AddEndpointForm from "@/components/AddEndpointForm";
 import LogoutButton from "@/components/LogoutButton";
+import { useUserContext } from "@/components/UserContext";
 
 export default function Dashboard() {
-  const { data: session } = useSession();
+  const { user } = useUserContext();
   return (
     <Box
       position="relative"
@@ -27,10 +27,10 @@ export default function Dashboard() {
       >
         <Box>
           <Typography variant="body1" component="p">
-            {session?.user?.name}
+            {user?.name}
           </Typography>
           <Typography variant="body1" component="p">
-            {session?.user?.email}
+            {user?.email}
           </Typography>
         </Box>
         <LogoutButton></LogoutButton>
@@ -44,7 +44,7 @@ export default function Dashboard() {
           position: "absolute",
           width: "100%",
           height: "100%",
-          zIndex: "-1",
+          zIndex: "-1"
         }}
       >
         <Image
@@ -54,7 +54,7 @@ export default function Dashboard() {
             display: "block",
             width: "100%",
             height: "100%",
-            objectFit: "cover",
+            objectFit: "cover"
           }}
           src="/loginBackground.jpg"
           alt="Building"

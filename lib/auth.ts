@@ -8,21 +8,21 @@ import {
   comparePasswordWithUserPassword,
   createUser,
   fetchUserByEmail,
-  userExists,
+  userExists
 } from "./services/user";
 
 export const authOptions: NextAuthOptions = {
   pages: {
-    signIn: "/login", // Redirect users to "/login" when signing in
+    signIn: "/login" // Redirect users to "/login" when signing in
   },
   session: {
-    strategy: "jwt", // Use JSON Web Tokens (JWT) for session management
+    strategy: "jwt" // Use JSON Web Tokens (JWT) for session management
   },
   secret: process.env.NEXT_SECRET,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
     }),
     CredentialsProvider({
       name: "credentials",
@@ -40,8 +40,8 @@ export const authOptions: NextAuthOptions = {
           Logger.error(error);
         }
         return null;
-      },
-    }),
+      }
+    })
   ],
   callbacks: {
     async session({ session }) {
@@ -51,11 +51,12 @@ export const authOptions: NextAuthOptions = {
       try {
         if (profile?.email) {
           await connectToMongoDB();
-          if (!userExists(profile.email)) {
-            createUser({
+          const user = await userExists(profile.email);
+          if (!user) {
+            await createUser({
               name: profile.name,
               email: profile.email,
-              password: "",
+              password: ""
             });
           }
         }
@@ -64,6 +65,6 @@ export const authOptions: NextAuthOptions = {
         Logger.error(error);
         return false;
       }
-    },
-  },
+    }
+  }
 };

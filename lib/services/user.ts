@@ -32,7 +32,7 @@ export async function fetchUserByEmail(email: string): Promise<IUser> {
     return user;
   } catch (error) {
     throw new Error(
-      `Error fetching user by email: ${(error as Error).message}`,
+      `Error fetching user by email: ${(error as Error).message}`
     );
   }
 }
@@ -40,7 +40,7 @@ export async function fetchUserByEmail(email: string): Promise<IUser> {
 export async function createUser({
   name,
   email,
-  password,
+  password
 }: Partial<IUser>): Promise<IUser> {
   try {
     const user = new User({ name, email, password });
@@ -53,7 +53,7 @@ export async function createUser({
 export async function createUserWithHashedPassword({
   name,
   email,
-  password,
+  password
 }: Partial<IUser>): Promise<IUser> {
   try {
     const hashedPassword = await bcrypt.hash(password as string, 10);
@@ -66,7 +66,7 @@ export async function createUserWithHashedPassword({
 
 export async function comparePasswordWithUserPassword(
   { email, password }: Partial<IUser>,
-  passwordToCompare: string,
+  passwordToCompare: string
 ) {
   try {
     if (!password) {
@@ -81,17 +81,17 @@ export async function comparePasswordWithUserPassword(
   }
 }
 
-export async function userExists({ email }: Partial<IUser>) {
+export async function userExists(email: IUser["email"]) {
   return await User.findOne({ email: email });
 }
 
 export async function updateUser(
   id: mongoose.Types.ObjectId,
-  updates: Partial<IUser>,
+  updates: Partial<IUser>
 ): Promise<IUser> {
   try {
     const user = await User.findByIdAndUpdate(id, updates, {
-      new: true,
+      new: true
     }).exec();
     if (!user) {
       throw new Error("User not found");

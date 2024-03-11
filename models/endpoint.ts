@@ -1,4 +1,4 @@
-import mongoose, { Document, models, Schema } from "mongoose";
+import mongoose, { Document, models,Schema } from "mongoose";
 
 export interface IEndpoint extends Document {
   url: string;
@@ -10,16 +10,16 @@ const EndpointSchema = new Schema<IEndpoint>(
     url: {
       type: String,
       unique: true,
-      required: true,
+      required: true
     },
     apiKey: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 export const Endpoint =
-  models.endpoint || mongoose.model("Endpoint", EndpointSchema);
+  models.Endpoint || mongoose.model("Endpoint", EndpointSchema);
 export default Endpoint;

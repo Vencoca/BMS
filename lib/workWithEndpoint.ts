@@ -1,7 +1,6 @@
 import { IEndpoint } from "@/models/endpoint";
 
 export async function testConnection(endpoint: Partial<IEndpoint>) {
-  return true;
   const headers = new Headers();
   headers.append("Authorization", endpoint.apiKey || "");
   const requestOptions: RequestInit = {

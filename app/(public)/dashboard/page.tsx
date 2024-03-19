@@ -1,14 +1,14 @@
 "use client";
 
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import Image from "next/image";
 
 import AddEndpointForm from "@/components/AddEndpointForm";
+import Graphs from "@/components/Graphs";
 import LogoutButton from "@/components/LogoutButton";
-import { useUserContext } from "@/components/UserContext";
+import { UserInfo } from "@/components/UserInfo";
 
 export default function Dashboard() {
-  const { user } = useUserContext();
   return (
     <Box
       position="relative"
@@ -25,18 +25,13 @@ export default function Dashboard() {
         flexDirection={"column"}
         gap={"16px"}
       >
-        <Box>
-          <Typography variant="body1" component="p">
-            {user?.name}
-          </Typography>
-          <Typography variant="body1" component="p">
-            {user?.email}
-          </Typography>
-        </Box>
+        <UserInfo></UserInfo>
         <LogoutButton></LogoutButton>
-
         <Box>
           <AddEndpointForm></AddEndpointForm>
+        </Box>
+        <Box>
+          <Graphs></Graphs>
         </Box>
       </Box>
       <Box

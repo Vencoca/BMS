@@ -57,10 +57,11 @@ export default function AddEndpointForm() {
         },
         body: JSON.stringify({ endpoint: endpoint, user: user })
       });
-      const resJson = await res.json();
+      //
       if (res.ok) {
         reset();
       } else {
+        const resJson = await res.json();
         throw new Error(resJson.message);
       }
     } catch (error: any) {

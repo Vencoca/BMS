@@ -68,6 +68,7 @@ export async function createEndpointAndPairItWithUser({
     if (await fetchEndpointByUrl(endpoint.url)) {
       throw new Error("Endpoint already exist!");
     }
+
     const createdEndpoint = await createEndpoint(endpoint);
     const createdEndpointUser = await createEndpointUser({
       user,

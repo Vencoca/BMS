@@ -10,57 +10,58 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
+import { useUserContext } from "./UserContext";
+
 interface Form {
-  email: string;
-  password: string;
+  name: string;
 }
 
-export default function RegisterFrom() {
-  const [registering, setRegistering] = useState(false);
+export default function CreateDashboardForm() {
+  const [apiInProgress, setApiInProgress] = useState(false);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
+  const { user } = useUserContext();
+  const router = useRouter();
   const {
     control,
     handleSubmit,
-    reset,
     formState: { errors }
   } = useForm({
     defaultValues: {
-      name: "",
-      email: "",
-      password: ""
+      name: ""
     },
     mode: "onBlur"
   });
-  const router = useRouter();
   const handleClose = () => {
     setOpen(false);
   };
+
   const onSubmit: SubmitHandler<Form> = async (data) => {
-    setRegistering(true);
     try {
-      const res = await fetch("/api/users", {
+      setApiInProgress(true);
+      const dashboard = {
+        name: data.name
+      };
+      const res = await fetch("/api/dashboards/dashboard", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify({ dashboard: dashboard, user: user })
       });
       const resJson = await res.json();
       if (res.ok) {
-        reset();
-        router.replace("/login");
-      } else if (resJson.message === "User alredy exists") {
-        setError("User alredy exists");
-        setOpen(true);
+        router.replace(`dashboard/${resJson.dashboardId}`);
       } else {
-        setError("User registration failed");
-        setOpen(true);
+        const resJson = await res.json();
+        throw new Error(resJson.message);
       }
-    } catch (error) {
-      console.error("Error during registration:", error);
+    } catch (error: any) {
+      setError(error.message || "Internal server error");
+      setOpen(true);
+    } finally {
+      setApiInProgress(false);
     }
-    setRegistering(false);
   };
 
   return (
@@ -80,38 +81,6 @@ export default function RegisterFrom() {
               {...field}
               error={errors["name"] && true}
               label={errors["name"]?.message || "Name"}
-              variant="outlined"
-            />
-          )}
-        />
-        <Controller
-          name="email"
-          control={control}
-          rules={{
-            required: { value: true, message: "Email is required!" },
-            pattern: { value: /^\S+@\S+$/i, message: "Invalid email format!" }
-          }}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              error={errors["email"] && true}
-              label={errors["email"]?.message || "E-mail"}
-              variant="outlined"
-            />
-          )}
-        />
-        <Controller
-          name="password"
-          control={control}
-          rules={{
-            required: { value: true, message: "Password is required!" }
-          }}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              error={errors["password"] && true}
-              label={errors["password"]?.message || "Password"}
-              type={"password"}
               variant="outlined"
             />
           )}
@@ -138,9 +107,9 @@ export default function RegisterFrom() {
           type="submit"
           variant="contained"
           sx={{ width: "100%" }}
-          disabled={registering}
+          disabled={apiInProgress}
         >
-          {registering ? <CircularProgress size={24} /> : "Register"}
+          {apiInProgress ? <CircularProgress size={24} /> : "Create dashboard"}
         </Button>
       </Box>
     </form>

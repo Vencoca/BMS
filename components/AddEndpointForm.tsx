@@ -50,14 +50,13 @@ export default function AddEndpointForm() {
       if (!workingConnection) {
         throw new Error("Cant establish connection to endpoit!");
       }
-      const res = await fetch("api/endpoints", {
+      const res = await fetch("/api/endpoints/endpoint", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({ endpoint: endpoint, user: user })
       });
-      //
       if (res.ok) {
         reset();
       } else {

@@ -1,14 +1,17 @@
 "use client";
 
-import { Box, Link, Typography } from "@mui/material";
+import { Box, Divider } from "@mui/material";
 import Image from "next/image";
-import NextLink from "next/link";
 
-import AddEndpointForm from "@/components/AddEndpointForm";
+import CreateGraphForm from "@/components/CreateGraphForm";
 import LogoutButton from "@/components/LogoutButton";
 import { UserInfo } from "@/components/UserInfo";
 
-export default function Home() {
+type graphPageProps = {
+  params: { dashboardId: string };
+};
+
+export default function GraphPage({ params }: graphPageProps) {
   return (
     <Box
       position="relative"
@@ -25,20 +28,12 @@ export default function Home() {
         flexDirection={"column"}
         gap={"16px"}
       >
-        <Typography variant="h3" component="h1">
-          Welcome to BMS
-        </Typography>
         <UserInfo></UserInfo>
         <LogoutButton></LogoutButton>
+        <Divider>Create new Graph</Divider>
         <Box>
-          <AddEndpointForm></AddEndpointForm>
+          <CreateGraphForm {...{ dashboardId: params.dashboardId }} />
         </Box>
-        <Typography variant="body1" component="p">
-          To continue into creating dashboard click{" "}
-          <Link href="/dashboard" component={NextLink} underline="hover">
-            {"here"}
-          </Link>
-        </Typography>
       </Box>
       <Box
         sx={{

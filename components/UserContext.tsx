@@ -25,7 +25,7 @@ export const UserCtxProvider = ({ children }: { children: any }) => {
           session.user.email &&
           user === null
         ) {
-          const res = await fetch(`api/users/user`, {
+          const res = await fetch(`/api/users/user`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"

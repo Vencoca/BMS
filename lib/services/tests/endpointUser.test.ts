@@ -5,6 +5,7 @@ import { IEndpoint } from "@/models/endpoint";
 import EndpointUser from "@/models/endpointUser";
 import { IUser } from "@/models/user";
 
+import * as workWithEndpointHelper from "../../workWithEndpoint";
 import { fetchEndpoint } from "../endpoint";
 import {
   createEndpointAndPairItWithUser,
@@ -12,9 +13,16 @@ import {
   deleteEndpointUser,
   fetchAllEndpointsForUser,
   fetchAllUsersForEndpoint,
-  fetchEndpointUsers,
+  fetchEndpointUsers
 } from "../endpointUser";
 import seedDB from "./seedDB";
+
+jest.mock("../../workWithEndpoint", () => {
+  return {
+    __esModule: true,
+    ...jest.requireActual("../../workWithEndpoint")
+  };
+});
 
 describe("EndpointUser methods tests", () => {
   let mongodb: MongoMemoryServer;
@@ -41,7 +49,7 @@ describe("EndpointUser methods tests", () => {
       });
 
       await expect(fetchEndpointUsers()).rejects.toThrow(
-        "Error fetching endpoint users: MongoDB connection error",
+        "Error fetching endpoint users: MongoDB connection error"
       );
     });
   });
@@ -60,7 +68,7 @@ describe("EndpointUser methods tests", () => {
         throw new Error("MongoDB connection error");
       });
       await expect(fetchAllEndpointsForUser(user)).rejects.toThrow(
-        "Error fetching endpoints for user: MongoDB connection error",
+        "Error fetching endpoints for user: MongoDB connection error"
       );
     });
   });
@@ -81,7 +89,7 @@ describe("EndpointUser methods tests", () => {
       });
 
       await expect(fetchAllUsersForEndpoint(endpoint)).rejects.toThrow(
-        "Error fetching users for endpoint: MongoDB connection error",
+        "Error fetching users for endpoint: MongoDB connection error"
       );
     });
   });
@@ -95,10 +103,10 @@ describe("EndpointUser methods tests", () => {
 
       expect(createdEndpointUser).toBeDefined();
       expect(createdEndpointUser.user._id?.toString()).toBe(
-        user._id?.toString(),
+        user._id?.toString()
       );
       expect(createdEndpointUser.endpoint._id?.toString()).toBe(
-        endpoint._id?.toString(),
+        endpoint._id?.toString()
       );
     });
 
@@ -108,7 +116,7 @@ describe("EndpointUser methods tests", () => {
       };
 
       await expect(createEndpointUser(invalidEndpointUser)).rejects.toThrow(
-        "Error creating endpointUser",
+        "Error creating endpointUser"
       );
     });
   });
@@ -118,17 +126,22 @@ describe("EndpointUser methods tests", () => {
       const user = testData.get("users")[0] as IUser;
       const endpoint = {
         url: "https://api.example.com/endpoint4",
-        apiKey: "s3cr3t4",
+        apiKey: "s3cr3t4"
       } as IEndpoint;
+      const spy = jest.spyOn(workWithEndpointHelper, "getEndpointSpecs");
+      const mockedReturnValue = Promise.resolve(endpoint);
+      spy.mockReturnValue(mockedReturnValue);
+
       const createdEndpointUser = await createEndpointAndPairItWithUser({
         user,
-        endpoint,
+        endpoint
       });
 
       expect(createdEndpointUser).toBeDefined();
       expect(createdEndpointUser.user._id?.toString()).toBe(
-        user._id?.toString(),
+        user._id?.toString()
       );
+      spy.mockRestore();
     });
 
     test("Error creating endpoint for user", async () => {
@@ -137,7 +150,7 @@ describe("EndpointUser methods tests", () => {
       };
 
       await expect(createEndpointAndPairItWithUser({ user })).rejects.toThrow(
-        "Error creating endpoint for user",
+        "Error creating endpoint for user"
       );
     });
   });
@@ -156,11 +169,11 @@ describe("EndpointUser methods tests", () => {
     test("Error deleting nonexisting endpoint user", async () => {
       const nonExistingUser = { _id: new mongoose.Types.ObjectId() } as IUser;
       const nonExistingEndpoint = {
-        _id: new mongoose.Types.ObjectId(),
+        _id: new mongoose.Types.ObjectId()
       } as IEndpoint;
 
       await expect(
-        deleteEndpointUser(nonExistingUser, nonExistingEndpoint),
+        deleteEndpointUser(nonExistingUser, nonExistingEndpoint)
       ).rejects.toThrow("Error deleting endpoint user: userEndpoint not found");
     });
     test("Delete endpoint when the last EndpointUser is deleted", async () => {
@@ -172,7 +185,7 @@ describe("EndpointUser methods tests", () => {
         await deleteEndpointUser(users![i], endpoint);
       }
       await expect(fetchEndpoint(endpoint._id)).rejects.toThrow(
-        "Endpoint not found",
+        "Endpoint not found"
       );
     });
   });

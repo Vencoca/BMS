@@ -1,14 +1,14 @@
 "use client";
 
-import { Box } from "@mui/material";
+import { Box, Divider } from "@mui/material";
 import Image from "next/image";
 
-import AddEndpointForm from "@/components/AddEndpointForm";
-import Graphs from "@/components/Graphs";
+import CreateDashboardForm from "@/components/CreateDashboardForm";
+import DashboardList from "@/components/DashboardsList";
 import LogoutButton from "@/components/LogoutButton";
 import { UserInfo } from "@/components/UserInfo";
 
-export default function Dashboard() {
+export default function DashboardOverview() {
   return (
     <Box
       position="relative"
@@ -27,11 +27,13 @@ export default function Dashboard() {
       >
         <UserInfo></UserInfo>
         <LogoutButton></LogoutButton>
+        <Divider>Create new dashboard</Divider>
         <Box>
-          <AddEndpointForm></AddEndpointForm>
+          <CreateDashboardForm></CreateDashboardForm>
         </Box>
+        <Divider>Dashboards</Divider>
         <Box>
-          <Graphs></Graphs>
+          <DashboardList></DashboardList>
         </Box>
       </Box>
       <Box

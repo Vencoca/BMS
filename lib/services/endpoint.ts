@@ -2,8 +2,6 @@ import mongoose from "mongoose";
 
 import Endpoint, { IEndpoint } from "@/models/endpoint";
 
-import { decrypt, encrypt } from "../cryptic";
-
 export async function fetchEndpoints(): Promise<IEndpoint[]> {
   try {
     return await Endpoint.find({});
@@ -20,7 +18,6 @@ export async function fetchEndpoint(
     if (!endpoint) {
       throw new Error("Endpoint not found");
     }
-    endpoint.apiKey = decrypt(endpoint.apiKey);
     return endpoint;
   } catch (error) {
     throw new Error(`Error fetching endpoint: ${(error as Error).message}`);
@@ -36,17 +33,15 @@ export async function fetchEndpointByUrl(url: IEndpoint["url"]) {
   }
 }
 
-export async function createEndpoint({
-  url,
-  apiKey
-}: Partial<IEndpoint>): Promise<IEndpoint> {
+export async function createEndpoint(
+  endpoint: Partial<IEndpoint>
+): Promise<IEndpoint> {
   try {
-    if (apiKey == undefined) {
+    if (endpoint.apiKey == undefined) {
       throw new Error("You have to define apiKey!");
     }
-    const encryptedApiKey = encrypt(apiKey as string);
-    const endpoint = new Endpoint({ url, apiKey: encryptedApiKey });
-    return await endpoint.save();
+    const newEndpoint = new Endpoint(endpoint);
+    return await newEndpoint.save();
   } catch (error) {
     throw new Error(`Error creating endpoint: ${(error as Error).message}`);
   }

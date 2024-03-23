@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import connectToMongoDB from "@/lib/database";
-import {
-  createUserWithHashedPassword
-} from "@/lib/services/user";
+import { createUserWithHashedPassword } from "@/lib/services/user";
 
 export async function POST(req: NextRequest) {
   try {

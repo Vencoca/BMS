@@ -2,6 +2,8 @@ import { IEndpoint } from "@/models/endpoint";
 import EndpointUser, { IEndpointUser } from "@/models/endpointUser";
 import { IUser } from "@/models/user";
 
+import { encrypt } from "../cryptic";
+import { getEndpointSpecs } from "../workWithEndpoint";
 import { createEndpoint, deleteEndpoint, fetchEndpointByUrl } from "./endpoint";
 
 export async function fetchEndpointUsers(): Promise<IEndpointUser[]> {
@@ -68,15 +70,20 @@ export async function createEndpointAndPairItWithUser({
     if (await fetchEndpointByUrl(endpoint.url)) {
       throw new Error("Endpoint already exist!");
     }
-
-    const createdEndpoint = await createEndpoint(endpoint);
+    const encryptedApiKey = encrypt(endpoint.apiKey as string);
+    endpoint.apiKey = encryptedApiKey;
+    const endpointWithSpecs = await getEndpointSpecs(endpoint);
+    if (!endpointWithSpecs) {
+      throw new Error("Endpoint shouldnt have updatedAt field yet");
+    }
+    const createdEndpoint = await createEndpoint(endpointWithSpecs);
     const createdEndpointUser = await createEndpointUser({
       user,
       endpoint: createdEndpoint
     });
     return createdEndpointUser;
   } catch (error) {
-    throw new Error(`Error creating endpoint: ${(error as Error).message}`);
+    throw new Error(`Error creating endpoint for user`);
   }
 }
 

@@ -8,7 +8,7 @@ import {
   deleteEndpoint,
   fetchEndpoint,
   fetchEndpoints,
-  updateEndpoint,
+  updateEndpoint
 } from "../endpoint";
 import endpointsMock from "../mocks/endpoints.json";
 import seedDB from "./seedDB";
@@ -39,7 +39,7 @@ describe("Endpoints methods tests", () => {
         throw new Error("MongoDB connection error");
       });
       await expect(fetchEndpoints()).rejects.toThrow(
-        "Error fetching endpoints: MongoDB connection error",
+        "Error fetching endpoints: MongoDB connection error"
       );
     });
   });
@@ -59,7 +59,7 @@ describe("Endpoints methods tests", () => {
       const nonExistingEndpointId = new mongoose.Types.ObjectId();
 
       await expect(fetchEndpoint(nonExistingEndpointId)).rejects.toThrow(
-        "Endpoint not found",
+        "Endpoint not found"
       );
     });
   });
@@ -68,23 +68,23 @@ describe("Endpoints methods tests", () => {
     test("Create endpoint", async () => {
       const newEndpoint = {
         url: "https://newendpoint.com",
-        apiKey: "newsecret123",
+        apiKey: "newsecret123"
       };
 
       const createdEndpoint = await createEndpoint(newEndpoint);
 
       expect(createdEndpoint).toBeDefined();
       expect(createdEndpoint.url).toBe(newEndpoint.url);
-      expect(createdEndpoint.apiKey).not.toEqual(newEndpoint.apiKey);
+      expect(createdEndpoint.apiKey).toEqual(newEndpoint.apiKey);
     });
 
     test("Error creating endpoint (incomplete data)", async () => {
       const invalidEndpoint = {
-        url: "https://invalidendpoint.com",
+        url: "https://invalidendpoint.com"
       };
 
       await expect(createEndpoint(invalidEndpoint)).rejects.toThrow(
-        "Error creating endpoint: You have to define apiKey!",
+        "Error creating endpoint: You have to define apiKey!"
       );
     });
   });
@@ -106,7 +106,7 @@ describe("Endpoints methods tests", () => {
       const updates = { url: "https://updatednonexistingendpoint.com" };
 
       await expect(
-        updateEndpoint(nonExistingEndpointId, updates),
+        updateEndpoint(nonExistingEndpointId, updates)
       ).rejects.toThrow("Endpoint not found");
     });
   });
@@ -124,7 +124,7 @@ describe("Endpoints methods tests", () => {
     test("Error deleting nonexisting endpoint", async () => {
       const nonExistingEndpointId = new mongoose.Types.ObjectId();
       await expect(deleteEndpoint(nonExistingEndpointId)).rejects.toThrow(
-        "Endpoint not found",
+        "Endpoint not found"
       );
     });
   });

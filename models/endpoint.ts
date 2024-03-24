@@ -12,7 +12,6 @@ const EndpointSchema = new Schema<IEndpoint>(
   {
     url: {
       type: String,
-      unique: true,
       required: true
     },
     apiKey: {

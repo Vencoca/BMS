@@ -74,7 +74,7 @@ export default function CreateGraphForm({
         })
       });
       if (res.ok) {
-        router.replace(`/`);
+        router.replace(`/dashboard/${dashboardId}`);
       } else {
         const resJson = await res.json();
         throw new Error(resJson.message);

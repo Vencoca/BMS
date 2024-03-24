@@ -3,8 +3,9 @@ import EndpointUser, { IEndpointUser } from "@/models/endpointUser";
 import { IUser } from "@/models/user";
 
 import { encrypt } from "../cryptic";
+import Logger from "../logger";
 import { getEndpointSpecs } from "../workWithEndpoint";
-import { createEndpoint, deleteEndpoint, fetchEndpointByUrl } from "./endpoint";
+import { createEndpoint, deleteEndpoint } from "./endpoint";
 
 export async function fetchEndpointUsers(): Promise<IEndpointUser[]> {
   try {
@@ -67,9 +68,6 @@ export async function createEndpointAndPairItWithUser({
   endpoint
 }: Partial<IEndpointUser>) {
   try {
-    if (await fetchEndpointByUrl(endpoint.url)) {
-      throw new Error("Endpoint already exist!");
-    }
     const encryptedApiKey = encrypt(endpoint.apiKey as string);
     endpoint.apiKey = encryptedApiKey;
     const endpointWithSpecs = await getEndpointSpecs(endpoint);
@@ -83,6 +81,7 @@ export async function createEndpointAndPairItWithUser({
     });
     return createdEndpointUser;
   } catch (error) {
+    Logger.error(error);
     throw new Error(`Error creating endpoint for user`);
   }
 }

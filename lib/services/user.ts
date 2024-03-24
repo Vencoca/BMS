@@ -57,7 +57,7 @@ export async function createUserWithHashedPassword({
 }: Partial<IUser>): Promise<IUser> {
   try {
     const hashedPassword = await bcrypt.hash(password as string, 10);
-    const user = new User({ name, email, hashedPassword });
+    const user = new User({ name, email, password: hashedPassword });
     return await user.save();
   } catch (error) {
     throw new Error(`Error creating user: ${(error as Error).message}`);
@@ -75,7 +75,7 @@ export async function comparePasswordWithUserPassword(
       }
       password = (await fetchUserByEmail(email)).password;
     }
-    return await bcrypt.compare(password, passwordToCompare);
+    return await bcrypt.compare(passwordToCompare, password);
   } catch (error) {
     throw new Error(`Error comparing passwords: ${(error as Error).message}`);
   }

@@ -32,6 +32,7 @@ export const authOptions: NextAuthOptions = {
         try {
           await connectToMongoDB();
           const user = await fetchUserByEmail(email);
+          console.log(user);
           if (!(await comparePasswordWithUserPassword(user, password))) {
             return null;
           }

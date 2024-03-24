@@ -31,7 +31,7 @@ export default function LoginPage() {
           position: "absolute",
           width: "100%",
           height: "100%",
-          zIndex: "-1",
+          zIndex: "-1"
         }}
       >
         <Image
@@ -41,7 +41,7 @@ export default function LoginPage() {
             display: "block",
             width: "100%",
             height: "100%",
-            objectFit: "cover",
+            objectFit: "cover"
           }}
           src="/loginBackground.jpg"
           alt="Building"

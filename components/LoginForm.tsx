@@ -42,7 +42,7 @@ export default function RegisterFrom() {
         setOpen(true);
         return;
       }
-      router.replace("dashboard");
+      router.replace("/");
     } catch (error) {
       Logger.error(error);
     }

@@ -5,7 +5,7 @@ import Image from "next/image";
 import NextLink from "next/link";
 
 import AuthCard from "@/components/AuthCard";
-import RegisterFrom from "@/components/RegisterForm";
+import RegisterFrom from "@/components/forms/RegisterForm";
 
 export default function RegisterPage() {
   return (
@@ -31,7 +31,7 @@ export default function RegisterPage() {
           position: "absolute",
           width: "100%",
           height: "100%",
-          zIndex: "-1",
+          zIndex: "-1"
         }}
       >
         <Image
@@ -41,7 +41,7 @@ export default function RegisterPage() {
             display: "block",
             width: "100%",
             height: "100%",
-            objectFit: "cover",
+            objectFit: "cover"
           }}
           src="/loginBackground.jpg"
           alt="Building"

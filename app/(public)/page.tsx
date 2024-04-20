@@ -4,7 +4,7 @@ import { Box, Link, Typography } from "@mui/material";
 import Image from "next/image";
 import NextLink from "next/link";
 
-import AddEndpointForm from "@/components/AddEndpointForm";
+import AddEndpointForm from "@/components/forms/AddEndpointForm";
 import LogoutButton from "@/components/LogoutButton";
 import { UserInfo } from "@/components/UserInfo";
 
@@ -15,8 +15,9 @@ export default function Home() {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      minHeight="100vh"
-      width="100vw"
+      minHeight="calc(100vh - 64px)"
+      height="100%"
+      width="100%"
     >
       <Box
         bgcolor={"white"}

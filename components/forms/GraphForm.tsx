@@ -7,6 +7,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Skeleton,
   Snackbar,
   TextField
 } from "@mui/material";
@@ -14,9 +15,11 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
+import { IDashboard } from "@/models/dashboard";
 import { IEndpoint } from "@/models/endpoint";
+import { IGraph } from "@/models/graph";
 
-import { useUserContext } from "./UserContext";
+import { useUserContext } from "../context/UserContext";
 
 interface Form {
   endpoint: IEndpoint["_id"];
@@ -24,12 +27,15 @@ interface Form {
   measurement: string;
   aggregationMethod: string;
   name: string;
+  dashboard: IDashboard["_id"];
 }
 
-export default function CreateGraphForm({
-  dashboardId
+export default function EditGraphForm({
+  dashboardId,
+  graph
 }: {
-  dashboardId: string;
+  dashboardId?: string;
+  graph?: IGraph;
 }) {
   const { user } = useUserContext();
   const [apiInProgress, setApiInProgress] = useState(false);
@@ -37,7 +43,8 @@ export default function CreateGraphForm({
   const [open, setOpen] = useState(false);
   const [fetching, setFetching] = useState(true);
   const router = useRouter();
-  const [endpoints, setEndpoints] = useState<IEndpoint[]>([]);
+  const [endpoints, setEndpoints] = useState<Record<string, IEndpoint>>({});
+  const [dashboards, setDashboards] = useState<IDashboard[]>([]);
   const {
     control,
     handleSubmit,
@@ -45,11 +52,11 @@ export default function CreateGraphForm({
     formState: { errors }
   } = useForm({
     defaultValues: {
-      name: "",
-      measurement: "",
-      endpoint: "",
-      numberOfPoints: 0,
-      aggregationMethod: "",
+      name: graph?.name || "",
+      measurement: graph?.measurement || "",
+      endpoint: graph?.endpoint || "",
+      numberOfPoints: graph?.numberOfPoints || 0,
+      aggregationMethod: graph?.aggregationMethod || "",
       dashboard: dashboardId
     },
     mode: "onBlur"
@@ -64,17 +71,35 @@ export default function CreateGraphForm({
   const onSubmit: SubmitHandler<Form> = async (data) => {
     try {
       setApiInProgress(true);
-      const res = await fetch("/api/graphs/graph", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          graph: { ...data, endpoint: endpoints[data.endpoint] }
-        })
-      });
+      let res;
+      if (graph) {
+        res = await fetch(`/api/graphs/graph/${graph._id}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            graph: {
+              ...data
+            }
+          })
+        });
+      } else {
+        res = await fetch("/api/graphs/graph", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            graph: {
+              ...data
+            }
+          })
+        });
+      }
+
       if (res.ok) {
-        router.replace(`/dashboard/${dashboardId}`);
+        router.replace(`/dashboard/${data.dashboard}`);
       } else {
         const resJson = await res.json();
         throw new Error(resJson.message);
@@ -99,7 +124,14 @@ export default function CreateGraphForm({
         });
         const resJson = await res.json();
         if (res.ok) {
-          setEndpoints(resJson.endpoints);
+          const endpointsObj = resJson.endpoints.reduce(
+            (acc: any, endpoint: IEndpoint) => {
+              acc[endpoint._id] = endpoint;
+              return acc;
+            },
+            {}
+          );
+          setEndpoints(endpointsObj);
         } else {
           throw new Error("Error fetching endpoint: ", resJson.message);
         }
@@ -109,20 +141,90 @@ export default function CreateGraphForm({
         setFetching(false);
       }
     };
+    const fetchDashboards = async () => {
+      try {
+        const res = await fetch(`/api/dashboards`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ user: user })
+        });
+        const resJson = await res.json();
+        if (res.ok) {
+          setDashboards(resJson.dashboards);
+        } else {
+          throw new Error("Error fetching dashboards: ", resJson.message);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setFetching(false);
+      }
+    };
     if (user != null) {
       fetchEndpoints();
+      fetchDashboards();
     }
-  }, [user]);
-
+  }, [user, dashboardId]);
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {fetching ? (
-        <CircularProgress size={24} />
+        <Box
+          minWidth="280px"
+          sx={{ display: "flex", flexDirection: "column", gap: "16px" }}
+        >
+          <Skeleton variant="rectangular" width={"100%"} height={56} />
+          <Skeleton variant="rectangular" width={"100%"} height={56} />
+          <Skeleton variant="rectangular" width={"100%"} height={56} />
+          <Skeleton variant="rectangular" width={"100%"} height={56} />
+          <Skeleton variant="rectangular" width={"100%"} height={56} />
+          <Skeleton variant="rectangular" width={"100%"} height={56} />
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{ width: "100%" }}
+            disabled={true}
+          >
+            {apiInProgress ? <CircularProgress size={24} /> : "Create graph"}
+          </Button>
+        </Box>
       ) : (
         <Box
           minWidth="280px"
           sx={{ display: "flex", flexDirection: "column", gap: "16px" }}
         >
+          {!dashboardId && (
+            <Controller
+              name="dashboard"
+              control={control}
+              rules={{
+                required: { value: true, message: "Dashboard is required" }
+              }}
+              render={({ field }) => (
+                <FormControl fullWidth>
+                  <InputLabel
+                    id="dashboard"
+                    error={errors["dashboard"] && true}
+                  >
+                    {errors["dashboard"]?.message || "Dashboard"}
+                  </InputLabel>
+                  <Select
+                    labelId="dashboard"
+                    error={errors["dashboard"] && true}
+                    label={errors["dashboard"]?.message || "Dashboard"}
+                    {...field}
+                  >
+                    {dashboards.map((dashboard, index) => (
+                      <MenuItem key={index} value={dashboard._id}>
+                        {dashboard.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+            />
+          )}
           <Controller
             name="name"
             control={control}
@@ -162,19 +264,32 @@ export default function CreateGraphForm({
             name="endpoint"
             control={control}
             rules={{
-              required: { value: true, message: "Measurement is required!" }
+              required: { value: true, message: "Endpoint is required!" }
             }}
             render={({ field }) => (
-              <FormControl fullWidth>
-                <InputLabel id="endpoint">Endpoint</InputLabel>
+              <FormControl fullWidth sx={{ maxWidth: "280px" }}>
+                <InputLabel id="endpoint" error={errors["endpoint"] && true}>
+                  {errors["endpoint"]?.message || ("Endpoint" as any)}
+                </InputLabel>
                 <Select
                   labelId="endpoint"
                   error={errors["endpoint"] && true}
-                  label={errors["endpoint"]?.message || "Name"}
+                  label={errors["endpoint"]?.message || ("Endpoint" as any)}
                   {...field}
                 >
-                  {endpoints.map((endpoint, index) => (
-                    <MenuItem key={index} value={index}>
+                  {Object.values(endpoints).map((endpoint, index) => (
+                    <MenuItem
+                      key={index}
+                      value={endpoint._id}
+                      sx={{
+                        width: "280px",
+                        textOverflow: "ellipsis",
+                        maxWidth: "280px",
+                        textWrap: "nowrap",
+                        overflow: "hidden",
+                        display: "block"
+                      }}
+                    >
                       {endpoint.url}
                     </MenuItem>
                   ))}
@@ -193,13 +308,18 @@ export default function CreateGraphForm({
             }}
             render={({ field }) => (
               <FormControl fullWidth>
-                <InputLabel id="aggregationMethod">
-                  Aggregation method
+                <InputLabel
+                  id="aggregationMethod"
+                  error={errors["aggregationMethod"] && true}
+                >
+                  {errors["aggregationMethod"]?.message || "Aggregation method"}
                 </InputLabel>
                 <Select
                   labelId="aggregationMethod"
                   error={errors["aggregationMethod"] && true}
-                  label={errors["aggregationMethod"]?.message || "Name"}
+                  label={
+                    errors["aggregationMethod"]?.message || "Aggregation method"
+                  }
                   {...field}
                 >
                   {endpointWatch !== "" &&
@@ -222,11 +342,16 @@ export default function CreateGraphForm({
             }}
             render={({ field }) => (
               <FormControl fullWidth>
-                <InputLabel id="measurement">Measurement</InputLabel>
+                <InputLabel
+                  id="measurement"
+                  error={errors["measurement"] && true}
+                >
+                  {errors["measurement"]?.message || "Measurement"}
+                </InputLabel>
                 <Select
                   labelId="measurement"
                   error={errors["measurement"] && true}
-                  label={errors["measurement"]?.message || "Name"}
+                  label={errors["measurement"]?.message || "Measurement"}
                   {...field}
                 >
                   {endpointWatch !== "" &&
@@ -265,7 +390,13 @@ export default function CreateGraphForm({
             sx={{ width: "100%" }}
             disabled={apiInProgress}
           >
-            {apiInProgress ? <CircularProgress size={24} /> : "Create graph"}
+            {apiInProgress ? (
+              <CircularProgress size={24} />
+            ) : graph ? (
+              "Edit Graph"
+            ) : (
+              "Create Graph"
+            )}
           </Button>
         </Box>
       )}

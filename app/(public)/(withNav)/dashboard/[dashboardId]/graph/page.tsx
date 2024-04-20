@@ -3,7 +3,7 @@
 import { Box, Divider } from "@mui/material";
 import Image from "next/image";
 
-import CreateGraphForm from "@/components/CreateGraphForm";
+import GraphForm from "@/components/forms/GraphForm";
 import LogoutButton from "@/components/LogoutButton";
 import { UserInfo } from "@/components/UserInfo";
 
@@ -18,8 +18,9 @@ export default function GraphPage({ params }: graphPageProps) {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      minHeight="100vh"
-      width="100vw"
+      width="100%"
+      height="100%"
+      minHeight="calc(100vh - 64px)"
     >
       <Box
         bgcolor={"white"}
@@ -32,7 +33,7 @@ export default function GraphPage({ params }: graphPageProps) {
         <LogoutButton></LogoutButton>
         <Divider>Create new Graph</Divider>
         <Box>
-          <CreateGraphForm {...{ dashboardId: params.dashboardId }} />
+          <GraphForm {...{ dashboardId: params.dashboardId }} />
         </Box>
       </Box>
       <Box

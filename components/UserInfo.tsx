@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 
-import { useUserContext } from "./UserContext";
+import { useUserContext } from "./context/UserContext";
 
 export function UserInfo() {
   const { user } = useUserContext();

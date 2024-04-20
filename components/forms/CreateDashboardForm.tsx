@@ -6,32 +6,29 @@ import {
   Snackbar,
   TextField
 } from "@mui/material";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
-import { testConnection } from "@/lib/workWithEndpoint";
-
-import { useUserContext } from "./UserContext";
+import { useUserContext } from "../context/UserContext";
 
 interface Form {
-  url: string;
-  apiKey: string;
+  name: string;
 }
 
-export default function AddEndpointForm() {
+export default function CreateDashboardForm() {
   const [apiInProgress, setApiInProgress] = useState(false);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
   const { user } = useUserContext();
+  const router = useRouter();
   const {
     control,
     handleSubmit,
-    reset,
     formState: { errors }
   } = useForm({
     defaultValues: {
-      url: "",
-      apiKey: ""
+      name: ""
     },
     mode: "onBlur"
   });
@@ -42,23 +39,19 @@ export default function AddEndpointForm() {
   const onSubmit: SubmitHandler<Form> = async (data) => {
     try {
       setApiInProgress(true);
-      const endpoint = {
-        url: data.url,
-        apiKey: data.apiKey
+      const dashboard = {
+        name: data.name
       };
-      const workingConnection = await testConnection(endpoint);
-      if (!workingConnection) {
-        throw new Error("Cant establish connection to endpoit!");
-      }
-      const res = await fetch("/api/endpoints/endpoint", {
+      const res = await fetch("/api/dashboards/dashboard", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ endpoint: endpoint, user: user })
+        body: JSON.stringify({ dashboard: dashboard, user: user })
       });
+      const resJson = await res.json();
       if (res.ok) {
-        reset();
+        router.replace(`dashboard/${resJson.dashboardId}`);
       } else {
         const resJson = await res.json();
         throw new Error(resJson.message);
@@ -78,32 +71,16 @@ export default function AddEndpointForm() {
         sx={{ display: "flex", flexDirection: "column", gap: "16px" }}
       >
         <Controller
-          name="url"
+          name="name"
           control={control}
           rules={{
-            required: { value: true, message: "Url is required!" }
+            required: { value: true, message: "Name is required!" }
           }}
           render={({ field }) => (
             <TextField
               {...field}
-              error={errors["url"] && true}
-              label={errors["url"]?.message || "Url"}
-              variant="outlined"
-            />
-          )}
-        />
-        <Controller
-          name="apiKey"
-          control={control}
-          rules={{
-            required: { value: true, message: "apiKey is required!" }
-          }}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              error={errors["apiKey"] && true}
-              label={errors["apiKey"]?.message || "apiKey"}
-              type={"password"}
+              error={errors["name"] && true}
+              label={errors["name"]?.message || "Name"}
               variant="outlined"
             />
           )}
@@ -132,7 +109,7 @@ export default function AddEndpointForm() {
           sx={{ width: "100%" }}
           disabled={apiInProgress}
         >
-          {apiInProgress ? <CircularProgress size={24} /> : "Add endpoint"}
+          {apiInProgress ? <CircularProgress size={24} /> : "Create dashboard"}
         </Button>
       </Box>
     </form>

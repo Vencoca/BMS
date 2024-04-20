@@ -4,6 +4,7 @@ import { IDashboard } from "./dashboard";
 import { IEndpoint } from "./endpoint";
 
 export interface IGraph {
+  _id: any;
   endpoint: IEndpoint["_id"];
   dashboard: IDashboard["_id"];
   numberOfPoints: number;

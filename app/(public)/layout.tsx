@@ -4,12 +4,13 @@ import { CssBaseline } from "@mui/material";
 import type { Metadata } from "next";
 import Head from "next/head";
 
-import { AuthProvider } from "@/components/Providers";
-import { UserCtxProvider } from "@/components/UserContext";
+import { AuthContext } from "@/components/context/AuthContext";
+import { UserCtxProvider } from "@/components/context/UserContext";
 
 export const metadata: Metadata = {
-  title: "BMS",
-  description: "Building managment system"
+  title: "FacilitIQ",
+  description:
+    "FacilitIQ: Revolutionizing Building Management. Optimize efficiency, comfort, and security with our intelligent BMS solution. Experience the future of facility management today!"
 };
 
 export default function RootLayout({
@@ -24,9 +25,9 @@ export default function RootLayout({
       </Head>
       <CssBaseline />
       <body>
-        <AuthProvider>
+        <AuthContext>
           <UserCtxProvider>{children}</UserCtxProvider>
-        </AuthProvider>
+        </AuthContext>
       </body>
     </html>
   );

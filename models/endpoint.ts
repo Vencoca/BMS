@@ -1,6 +1,7 @@
 import mongoose, { Document, models, Schema } from "mongoose";
 
 export interface IEndpoint extends Document {
+  name: string;
   url: string;
   apiKey: string;
   measurements: string[];
@@ -10,6 +11,10 @@ export interface IEndpoint extends Document {
 
 const EndpointSchema = new Schema<IEndpoint>(
   {
+    name: {
+      type: String,
+      required: true
+    },
     url: {
       type: String,
       required: true

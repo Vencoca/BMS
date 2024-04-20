@@ -1,6 +1,6 @@
 "use client";
 
-import { Box } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 import { LineChart } from "@mui/x-charts";
 import { useEffect, useState } from "react";
 
@@ -21,7 +21,6 @@ export default function Graph(graph: Partial<IGraph>) {
         });
         const resJson = await res.json();
         if (res.ok) {
-          console.log(resJson);
           setGraphData(resJson.data);
         } else {
           throw new Error(resJson.message);
@@ -36,7 +35,9 @@ export default function Graph(graph: Partial<IGraph>) {
   }, [graph]);
 
   if (loading || !graphData) {
-    return <div>Loading...</div>;
+    return (
+      <Skeleton width={"90%"} height={"100%"} sx={{ ml: 2, mr: 2 }}></Skeleton>
+    );
   }
 
   return (
@@ -46,8 +47,8 @@ export default function Graph(graph: Partial<IGraph>) {
         flexWrap: "wrap",
         gap: "40px",
         overflow: "hidden",
-        width: "800px",
-        height: "300px"
+        width: "100%",
+        height: "100%"
       }}
     >
       <LineChart

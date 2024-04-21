@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 import { IGraph } from "@/models/graph";
 
-export default function Graph(graph: Partial<IGraph>) {
+export default function Graph({ graph }: { graph: Partial<IGraph> }) {
   const [graphData, setGraphData] = useState();
   const [loading, setLoading] = useState(true);
   useEffect(() => {

@@ -13,6 +13,12 @@ export interface IGraph {
   name: string;
   yAxis: string;
   xAxis: string;
+  layout: {
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+  };
 }
 
 const GraphSchema = new Schema<IGraph>(
@@ -47,6 +53,20 @@ const GraphSchema = new Schema<IGraph>(
     },
     yAxis: {
       type: String
+    },
+    layout: {
+      x: {
+        type: Number
+      },
+      y: {
+        type: Number
+      },
+      h: {
+        type: Number
+      },
+      w: {
+        type: Number
+      }
     }
   },
   { timestamps: true }

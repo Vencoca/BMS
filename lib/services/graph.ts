@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Layout } from "react-grid-layout";
 
 import Graph, { IGraph } from "@/models/graph";
 
@@ -30,6 +31,31 @@ export async function createGraph(graph: Partial<IGraph>): Promise<IGraph> {
     return await newGraph.save();
   } catch (error) {
     throw new Error(`Error creating graph: ${(error as Error).message}`);
+  }
+}
+
+export async function updateLayout(
+  layout: Layout[],
+  graphs: Partial<IGraph>[]
+) {
+  if (layout.length !== graphs.length) {
+    throw new Error(`Error - not matching lengths of layout and graphs`);
+  }
+  try {
+    const promises: any[] = [];
+    for (let i = 0; i < graphs.length; i++) {
+      graphs[i].layout = {
+        x: layout[i].x,
+        y: layout[i].y,
+        w: layout[i].w,
+        h: layout[i].h
+      };
+      promises.push(updateGraph(graphs[i]._id, graphs[i]));
+    }
+    await Promise.all(promises);
+    return true;
+  } catch (error) {
+    throw new Error(`Error updating layout: ${(error as Error).message}`);
   }
 }
 

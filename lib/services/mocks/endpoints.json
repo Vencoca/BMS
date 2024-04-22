@@ -1,14 +1,17 @@
 [
   {
     "url": "https://api.example.com/endpoint1",
-    "apiKey": "s3cr3t1"
+    "apiKey": "s3cr3t1",
+    "name": "endpoint1"
   },
   {
     "url": "https://api.example.com/endpoint2",
-    "apiKey": "s3cr3t2"
+    "apiKey": "s3cr3t2",
+    "name": "endpoint2"
   },
   {
     "url": "https://api.example.com/endpoint3",
-    "apiKey": "s3cr3t3"
+    "apiKey": "s3cr3t3",
+    "name": "endpoint3"
   }
 ]

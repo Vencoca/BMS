@@ -4,11 +4,14 @@ import "/node_modules/react-grid-layout/css/styles.css";
 import "/node_modules/react-resizable/css/styles.css";
 import "@/styles/gridLayout.css";
 
-import { Box, FormControlLabel, Switch } from "@mui/material";
-import { useEffect, useMemo, useRef, useState } from "react";
+import SaveIcon from "@mui/icons-material/Save";
+import { Box, IconButton, Paper } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 import { Layout, Responsive, WidthProvider } from "react-grid-layout";
 
+import { useNavContext } from "@/components/context/NavContext";
 import Graph from "@/components/Graph";
+import DashboardSettings from "@/components/menu/DashboardSettings";
 import { IGraph } from "@/models/graph";
 
 type dashboardProps = {
@@ -16,9 +19,10 @@ type dashboardProps = {
 };
 
 export default function Dashboard({ params }: dashboardProps) {
-  const [editable, setEditable] = useState(false);
   const [graphs, setGraphs] = useState<IGraph[]>([]);
-  const data = useRef<any>({ layout: null });
+  const { setRightMenu, RightMenu, editable, data, setEditable } =
+    useNavContext();
+
   const ResponsiveGridLayout = useMemo(() => {
     return WidthProvider(Responsive);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -37,6 +41,7 @@ export default function Dashboard({ params }: dashboardProps) {
         const resJson = await res.json();
         if (res.ok) {
           setGraphs(resJson.graphs);
+          data.current.graphs = resJson.graphs;
         } else {
           throw new Error("Error setting dashboards: ", resJson.message);
         }
@@ -45,9 +50,16 @@ export default function Dashboard({ params }: dashboardProps) {
       }
     };
     fetchDashboards();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.dashboardId]);
 
-  async function handleEditableSwitch() {
+  useEffect(() => {
+    if (!RightMenu) {
+      setRightMenu(() => <DashboardSettings />);
+    }
+  }, [setRightMenu, RightMenu]);
+
+  async function handleSave() {
     setEditable(() => !editable);
     if (editable && data.current.layout) {
       try {
@@ -57,7 +69,7 @@ export default function Dashboard({ params }: dashboardProps) {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            graphs: graphs,
+            graphs: data.current.graphs,
             layout: data.current.layout
           })
         });
@@ -76,14 +88,21 @@ export default function Dashboard({ params }: dashboardProps) {
 
   return (
     <>
-      <Box sx={{ position: "fixed", right: 40, bottom: 40 }}>
-        <FormControlLabel
-          checked={editable}
-          onChange={() => handleEditableSwitch()}
-          control={<Switch />}
-          label="Label"
-        />
-      </Box>
+      {editable && (
+        <Paper
+          sx={{
+            position: "fixed",
+            right: 40,
+            bottom: 40,
+            borderRadius: "100%",
+            zIndex: 999
+          }}
+        >
+          <IconButton aria-label="save" size="large" onClick={handleSave}>
+            <SaveIcon fontSize="large" />
+          </IconButton>
+        </Paper>
+      )}
       <ResponsiveGridLayout
         className="layout"
         cols={{ lg: 12, md: 8, sm: 6, xs: 4, xxs: 2 }}

@@ -1,14 +1,16 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { usePathname } from "next/navigation";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 interface NavCtxProps {
   RightMenu: any;
   setRightMenu: React.Dispatch<
     React.SetStateAction<React.ComponentType<any> | null>
   >;
-  refreshMenu: any;
-  setRefreshMenu: any;
+  editable: boolean;
+  setEditable: any;
+  data: any;
 }
 
 const NavCtx = createContext({} as NavCtxProps);
@@ -19,13 +21,24 @@ export const NavCtxProvider: React.FC<{ children: React.ReactNode }> = ({
   const [RightMenu, setRightMenu] = useState<React.ComponentType<any> | null>(
     null
   );
-  const [refreshMenu, setRefreshMenu] = useState(false);
+  const data = useRef<any>({ layout: null, graphs: null });
+  const [editable, setEditable] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (RightMenu) {
+      setRightMenu(null);
+      data.current.layout = null;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   const value = {
-    RightMenu: RightMenu,
-    setRightMenu: setRightMenu,
-    refreshMenu: refreshMenu,
-    setRefreshMenu: setRefreshMenu
+    RightMenu,
+    setRightMenu,
+    editable,
+    setEditable,
+    data
   };
 
   return <NavCtx.Provider value={value}>{children}</NavCtx.Provider>;

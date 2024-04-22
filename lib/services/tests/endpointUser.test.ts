@@ -126,7 +126,8 @@ describe("EndpointUser methods tests", () => {
       const user = testData.get("users")[0] as IUser;
       const endpoint = {
         url: "https://api.example.com/endpoint4",
-        apiKey: "s3cr3t4"
+        apiKey: "s3cr3t4",
+        name: "test"
       } as IEndpoint;
       const spy = jest.spyOn(workWithEndpointHelper, "getEndpointSpecs");
       const mockedReturnValue = Promise.resolve(endpoint);

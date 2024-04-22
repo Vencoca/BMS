@@ -68,7 +68,8 @@ describe("Endpoints methods tests", () => {
     test("Create endpoint", async () => {
       const newEndpoint = {
         url: "https://newendpoint.com",
-        apiKey: "newsecret123"
+        apiKey: "newsecret123",
+        name: "newEdpoint"
       };
 
       const createdEndpoint = await createEndpoint(newEndpoint);

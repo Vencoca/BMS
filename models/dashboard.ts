@@ -1,4 +1,4 @@
-import mongoose, { Document,models, Schema } from "mongoose";
+import mongoose, { Document, models, Schema } from "mongoose";
 
 export interface IDashboard extends Document {
   name: string;

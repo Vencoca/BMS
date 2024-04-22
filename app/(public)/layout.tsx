@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import Head from "next/head";
 
 import { AuthContext } from "@/components/context/AuthContext";
+import { NavCtxProvider } from "@/components/context/NavContext";
 import { UserCtxProvider } from "@/components/context/UserContext";
 
 export const metadata: Metadata = {
@@ -26,7 +27,9 @@ export default function RootLayout({
       <CssBaseline />
       <body>
         <AuthContext>
-          <UserCtxProvider>{children}</UserCtxProvider>
+          <UserCtxProvider>
+            <NavCtxProvider>{children}</NavCtxProvider>
+          </UserCtxProvider>
         </AuthContext>
       </body>
     </html>

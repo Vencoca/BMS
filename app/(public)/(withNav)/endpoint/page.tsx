@@ -1,3 +1,5 @@
+"use client";
+
 import { Box, Divider } from "@mui/material";
 
 import AddEndpointForm from "@/components/forms/AddEndpointForm";

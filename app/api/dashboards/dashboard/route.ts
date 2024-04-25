@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
       dashboard
     });
     return NextResponse.json(
-      { message: "Dashboard created", dashboardId: newDashboard._id },
+      { message: "Dashboard created", dashboard: newDashboard.dashboard },
       { status: 201 }
     );
   } catch (error: any) {

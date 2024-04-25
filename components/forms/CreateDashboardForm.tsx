@@ -20,7 +20,7 @@ export default function CreateDashboardForm() {
   const [apiInProgress, setApiInProgress] = useState(false);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
-  const { user } = useUserContext();
+  const { user, setDashboards } = useUserContext();
   const router = useRouter();
   const {
     control,
@@ -51,7 +51,16 @@ export default function CreateDashboardForm() {
       });
       const resJson = await res.json();
       if (res.ok) {
-        router.replace(`dashboard/${resJson.dashboardId}`);
+        setDashboards((dashboards) => {
+          console.log(dashboards);
+          if (dashboards) {
+            dashboards.push(resJson.dashboard);
+          } else {
+            return resJson.dashboard;
+          }
+          return [...dashboards];
+        });
+        router.replace(`/dashboard/${resJson.dashboard._id}`);
       } else {
         const resJson = await res.json();
         throw new Error(resJson.message);

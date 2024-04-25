@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 import { IDashboard } from "@/models/dashboard";
 import DashboardUser, { IDashboardUser } from "@/models/dashboardUser";
 import { IUser } from "@/models/user";
@@ -49,5 +51,19 @@ export async function createDashboardAndPairItWithUser({
     return createdDashboardUser;
   } catch (error) {
     throw new Error(`Error creating dashboard for user`);
+  }
+}
+
+export async function deleteDashboard(id: mongoose.Types.ObjectId) {
+  try {
+    const deletedDashboard = await DashboardUser.findOneAndDelete({
+      dashboard: id
+    });
+    if (!deletedDashboard) {
+      throw new Error("Dashboard not found");
+    }
+    return deletedDashboard;
+  } catch (error) {
+    throw new Error(`Error deleting dashboard: ${(error as Error).message}`);
   }
 }

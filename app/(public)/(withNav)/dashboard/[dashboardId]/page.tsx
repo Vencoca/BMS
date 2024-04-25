@@ -55,9 +55,11 @@ export default function Dashboard({ params }: dashboardProps) {
 
   useEffect(() => {
     if (!RightMenu) {
-      setRightMenu(() => <DashboardSettings />);
+      setRightMenu(() => (
+        <DashboardSettings dashboardId={params.dashboardId} />
+      ));
     }
-  }, [setRightMenu, RightMenu]);
+  }, [setRightMenu, RightMenu, params.dashboardId]);
 
   async function handleSave() {
     setEditable(() => !editable);

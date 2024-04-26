@@ -30,7 +30,7 @@ interface Form {
   dashboard: IDashboard["_id"];
 }
 
-export default function EditGraphForm({
+export default function GraphForm({
   dashboardId,
   graph
 }: {
@@ -174,7 +174,9 @@ export default function EditGraphForm({
           minWidth="280px"
           sx={{ display: "flex", flexDirection: "column", gap: "16px" }}
         >
-          <Skeleton variant="rectangular" width={"100%"} height={56} />
+          {!dashboardId && (
+            <Skeleton variant="rectangular" width={"100%"} height={56} />
+          )}
           <Skeleton variant="rectangular" width={"100%"} height={56} />
           <Skeleton variant="rectangular" width={"100%"} height={56} />
           <Skeleton variant="rectangular" width={"100%"} height={56} />
@@ -290,7 +292,7 @@ export default function EditGraphForm({
                         display: "block"
                       }}
                     >
-                      {endpoint.url}
+                      {endpoint.name}
                     </MenuItem>
                   ))}
                 </Select>

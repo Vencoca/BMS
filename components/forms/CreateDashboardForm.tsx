@@ -52,7 +52,6 @@ export default function CreateDashboardForm() {
       const resJson = await res.json();
       if (res.ok) {
         setDashboards((dashboards) => {
-          console.log(dashboards);
           if (dashboards) {
             dashboards.push(resJson.dashboard);
           } else {

@@ -4,28 +4,6 @@ import { decrypt } from "./cryptic";
 import Logger from "./logger";
 import { updateEndpoint } from "./services/endpoint";
 
-export async function testConnection(endpoint: Partial<IEndpoint>) {
-  const headers = new Headers();
-  headers.append("Authorization", endpoint.apiKey || "");
-  const requestOptions: RequestInit = {
-    method: "GET",
-    headers: headers,
-    redirect: "follow"
-  };
-
-  try {
-    const response = await fetch(endpoint.url || "", requestOptions);
-    if (response.ok) {
-      return true;
-    }
-    return false;
-  } catch (error) {
-    throw new Error(
-      `Error during testing connection: ${(error as Error).message}`
-    );
-  }
-}
-
 export async function getEndpointSpecs(endpoint: Partial<IEndpoint>) {
   const headers = new Headers();
   headers.append("Authorization", decrypt(endpoint.apiKey || ""));

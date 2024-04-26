@@ -5,7 +5,7 @@ import Image from "next/image";
 import NextLink from "next/link";
 
 import AuthCard from "@/components/AuthCard";
-import LoginFrom from "@/components/LoginForm";
+import LoginFrom from "@/components/forms/LoginForm";
 
 export default function LoginPage() {
   return (

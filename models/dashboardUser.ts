@@ -12,7 +12,7 @@ export interface IDashboardUser extends Document {
   role: string;
 }
 
-const IDashboardUserSchema = new Schema<IDashboardUser>({
+const DashboardUserSchema = new Schema<IDashboardUser>({
   user: { type: mongoose.Types.ObjectId, ref: "User", required: true },
   dashboard: {
     type: mongoose.Types.ObjectId,
@@ -22,7 +22,7 @@ const IDashboardUserSchema = new Schema<IDashboardUser>({
   role: { type: String, enum: Object.values(roles), required: false }
 });
 
-IDashboardUserSchema.post<IDashboardUser>(
+DashboardUserSchema.post<IDashboardUser>(
   "findOneAndDelete",
   async function (doc: IDashboardUser, next) {
     await Dashboard.deleteOne({ _id: doc?.dashboard._id });
@@ -33,5 +33,5 @@ IDashboardUserSchema.post<IDashboardUser>(
 
 const DashboardUser =
   models.DashboardUser ||
-  mongoose.model<IDashboardUser>("DashboardUser", IDashboardUserSchema);
+  mongoose.model<IDashboardUser>("DashboardUser", DashboardUserSchema);
 export default DashboardUser;

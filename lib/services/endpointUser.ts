@@ -2,7 +2,7 @@ import { IEndpoint } from "@/models/endpoint";
 import EndpointUser, { IEndpointUser } from "@/models/endpointUser";
 import { IUser } from "@/models/user";
 
-import { encrypt } from "../cryptic";
+import { decrypt, encrypt } from "../cryptic";
 import { getEndpointSpecs } from "../workWithEndpoint";
 import { createEndpoint, deleteEndpoint } from "./endpoint";
 
@@ -26,6 +26,9 @@ export async function fetchAllEndpointsForUser(
     const endpoints = endpointUsers.map(
       (endpointUser) => endpointUser.endpoint
     );
+    endpoints.forEach((endpoint) => {
+      endpoint.apiKey = decrypt(endpoint.apiKey); // Assuming 'decrypt' is your decryption function
+    });
     return endpoints;
   } catch (error) {
     throw new Error(
@@ -35,7 +38,7 @@ export async function fetchAllEndpointsForUser(
 }
 
 export async function fetchAllUsersForEndpoint(
-  endpoint: IEndpoint
+  endpoint: Partial<IEndpoint>
 ): Promise<IUser[] | null> {
   try {
     const endpointUsers = await EndpointUser.find({
@@ -74,6 +77,7 @@ export async function createEndpointAndPairItWithUser({
       throw new Error("Endpoint shouldnt have updatedAt field yet");
     }
     const createdEndpoint = await createEndpoint(endpointWithSpecs);
+
     const createdEndpointUser = await createEndpointUser({
       user,
       endpoint: createdEndpoint
@@ -85,8 +89,8 @@ export async function createEndpointAndPairItWithUser({
 }
 
 export async function deleteEndpointUser(
-  user: IUser,
-  endpoint: IEndpoint
+  user: Partial<IUser>,
+  endpoint: Partial<IEndpoint>
 ): Promise<IEndpointUser> {
   try {
     const endpointUser = await EndpointUser.findOneAndDelete({

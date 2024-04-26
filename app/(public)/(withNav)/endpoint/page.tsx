@@ -2,7 +2,7 @@
 
 import { Box, Divider } from "@mui/material";
 
-import AddEndpointForm from "@/components/forms/AddEndpointForm";
+import AddEndpointForm from "@/components/forms/EndpointForm";
 
 export default function Endpoint() {
   return (

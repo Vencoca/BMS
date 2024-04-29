@@ -188,7 +188,13 @@ export default function GraphForm({
             sx={{ width: "100%" }}
             disabled={true}
           >
-            {apiInProgress ? <CircularProgress size={24} /> : "Create graph"}
+            {apiInProgress ? (
+              <CircularProgress size={24} />
+            ) : graph ? (
+              "Edit Graph"
+            ) : (
+              "Create Graph"
+            )}
           </Button>
         </Box>
       ) : (

@@ -3,7 +3,6 @@
 import { Box, Link, Typography } from "@mui/material";
 import NextLink from "next/link";
 
-
 export default function Home() {
   return (
     <Box
@@ -23,7 +22,7 @@ export default function Home() {
         gap={"16px"}
       >
         <Typography variant="h3" component="h1">
-          Welcome to FacilitiQ
+          Welcome to FacilitIQ
         </Typography>
         <Typography variant="body1" component="p">
           To continue into creating dashboard click{" "}

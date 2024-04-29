@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import connectToMongoDB from "@/lib/database";
 import Logger from "@/lib/logger";
-import { fetchGraph, updateGraph } from "@/lib/services/graph";
+import { deleteGraph, fetchGraph, updateGraph } from "@/lib/services/graph";
 
 type dashboardProps = {
   params: { graphId: mongoose.Types.ObjectId };
@@ -29,6 +29,17 @@ export async function POST(req: NextRequest, { params }: dashboardProps) {
       { message: "Graph updated", graph: newGraph },
       { status: 201 }
     );
+  } catch (error: any) {
+    Logger.error(error);
+    return NextResponse.json({ message: error.message }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: NextRequest, { params }: dashboardProps) {
+  try {
+    await connectToMongoDB();
+    await deleteGraph(params.graphId);
+    return NextResponse.json({}, { status: 200 });
   } catch (error: any) {
     Logger.error(error);
     return NextResponse.json({ message: error.message }, { status: 500 });

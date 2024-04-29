@@ -1,6 +1,7 @@
 "use client";
 
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import SettingsIcon from "@mui/icons-material/Settings";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import {
@@ -19,11 +20,14 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-  Switch
+  Switch,
+  TextField
 } from "@mui/material";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { IDashboard } from "@/models/dashboard";
 
 import { useNavContext } from "../context/NavContext";
 import { useUserContext } from "../context/UserContext";
@@ -35,12 +39,23 @@ export default function DashboardSettings({
 }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogNameOpen, setDialogNameOpen] = useState(false);
+  const [nameInput, setNameInput] = useState("");
+  const [dashboardName, setDasboardName] = useState("");
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const { editable, setEditable, data } = useNavContext();
   const router = useRouter();
-  const { setDashboards } = useUserContext();
+  const { setDashboards, dashboards } = useUserContext();
+
+  useEffect(() => {
+    const dashboard = dashboards?.find(
+      (dashboard) => dashboard._id === dashboardId
+    );
+    setDasboardName(dashboard?.name || "");
+    setNameInput(dashboard?.name || "");
+  }, [dashboardId, dashboards]);
 
   async function handleEditableSwitch() {
     setEditable(() => !editable);
@@ -70,6 +85,11 @@ export default function DashboardSettings({
     }
   }
 
+  function handleDialogNameOpen() {
+    setDialogNameOpen(true);
+    handleClose();
+  }
+
   function handleDialogOpen() {
     setDialogOpen(true);
     handleClose();
@@ -77,6 +97,41 @@ export default function DashboardSettings({
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleNameChange = async () => {
+    try {
+      const res = await fetch(`/api/dashboards/dashboard/${dashboardId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          dashboard: {
+            name: nameInput
+          }
+        })
+      });
+      const resJson = await res.json();
+      if (res.ok) {
+        setDashboards((dashboards) => {
+          const index = dashboards?.findIndex(
+            (dashboard) => dashboard._id === dashboardId
+          );
+          if (index != undefined) {
+            const updatedDashboards = [...(dashboards as IDashboard[])];
+            updatedDashboards[index] = resJson.dashboard;
+            return updatedDashboards;
+          }
+          return dashboards;
+        });
+        setDialogNameOpen(false);
+      } else {
+        console.log("Something went wrong");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleDelete = async () => {
@@ -121,6 +176,12 @@ export default function DashboardSettings({
       >
         <MenuItem disabled={true}>Dashboard Settings</MenuItem>
         <Divider />
+        <ListItemButton onClick={handleDialogNameOpen}>
+          <ListItemIcon>
+            <EditIcon />
+          </ListItemIcon>
+          <ListItemText primary={"Change name"} />
+        </ListItemButton>
         <MenuItem>
           <FormControlLabel
             checked={editable}
@@ -157,6 +218,37 @@ export default function DashboardSettings({
           <Button onClick={() => setDialogOpen(false)}>Disagree</Button>
           <Button onClick={handleDelete} autoFocus>
             Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={dialogNameOpen}
+        onClose={() => setDialogNameOpen(false)}
+        aria-labelledby="Change dashboard name"
+      >
+        <DialogTitle>{"Dashboard name change"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Please provide a new name</DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            name="name"
+            label="Dashboard name"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={nameInput}
+            onChange={(event) => {
+              setNameInput(event.target.value);
+            }}
+            defaultValue={dashboardName}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialogNameOpen(false)}>Cancel</Button>
+          <Button onClick={handleNameChange} autoFocus>
+            Save
           </Button>
         </DialogActions>
       </Dialog>

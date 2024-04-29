@@ -1,6 +1,8 @@
 "use client";
 
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Box, Button, Divider, Skeleton } from "@mui/material";
+import NextLink from "next/link";
 import { useEffect, useState } from "react";
 
 import GraphForm from "@/components/forms/GraphForm";
@@ -64,7 +66,6 @@ export default function Dashboard({ params }: dashboardProps) {
               <Skeleton variant="rectangular" width={"100%"} height={56} />
               <Skeleton variant="rectangular" width={"100%"} height={56} />
               <Skeleton variant="rectangular" width={"100%"} height={56} />
-              <Skeleton variant="rectangular" width={"100%"} height={56} />
               <Button
                 type="submit"
                 variant="contained"
@@ -81,6 +82,17 @@ export default function Dashboard({ params }: dashboardProps) {
             ></GraphForm>
           )}
         </Box>
+
+        <Divider></Divider>
+        <Button
+          href={`/dashboard/${params.dashboardId}`}
+          component={NextLink}
+          variant="contained"
+          sx={{ height: "max-content" }}
+        >
+          <ArrowBackIcon sx={{ mr: 2 }}></ArrowBackIcon>
+          Go back to dashboard
+        </Button>
       </Box>
     </Box>
   );

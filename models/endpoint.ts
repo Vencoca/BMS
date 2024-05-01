@@ -1,5 +1,7 @@
 import mongoose, { Document, models, Schema } from "mongoose";
 
+import Graph from "./graph";
+
 export interface IEndpoint extends Document {
   name: string;
   url: string;
@@ -33,6 +35,14 @@ const EndpointSchema = new Schema<IEndpoint>(
     }
   },
   { timestamps: true }
+);
+
+EndpointSchema.post<IEndpoint>(
+  "findOneAndDelete",
+  async function (doc: IEndpoint, next) {
+    await Graph.deleteMany({ endpoint: doc });
+    next();
+  }
 );
 
 export const Endpoint =

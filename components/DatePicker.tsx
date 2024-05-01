@@ -12,10 +12,7 @@ import {
   SelectChangeEvent
 } from "@mui/material";
 import DateTimeRangePicker from "@wojtekmaj/react-datetimerange-picker";
-import { useState } from "react";
 
-type ValuePiece = Date | null;
-type Value = ValuePiece | [ValuePiece, ValuePiece];
 type Options =
   | "30 min"
   | "1 hour"
@@ -27,52 +24,51 @@ type Options =
   | "This month"
   | "Custom";
 
-export default function DatePicker({
-  defaultOption
-}: {
-  defaultOption?: Options;
-}) {
-  const [value, setValue] = useState<Value>([new Date(), new Date()]);
-  const [option, setOption] = useState<Options>(defaultOption || "Today");
+export function CalculateDate(option: Options) {
+  const now = new Date();
+  switch (option) {
+    case "30 min":
+      return [new Date(now.getTime() - 30 * 60 * 1000), now];
+    case "1 hour":
+      return [new Date(now.getTime() - 60 * 60 * 1000), now];
+    case "6 hours":
+      return [new Date(now.getTime() - 6 * 60 * 60 * 1000), now];
+    case "12 hours":
+      return [new Date(now.getTime() - 12 * 60 * 60 * 1000), now];
+    case "Today":
+      return [new Date(now.setHours(0, 0, 0, 0)), new Date()];
+    case "Yesterday":
+      const yesterday = new Date(now);
+      yesterday.setDate(now.getDate() - 1);
+      return [
+        new Date(yesterday.setHours(0, 0, 0, 0)),
+        new Date(yesterday.setHours(23, 59, 59, 999))
+      ];
+    case "This week":
+      const startOfWeek = new Date(now);
+      startOfWeek.setDate(now.getDate() - now.getDay());
+      return [new Date(startOfWeek.setHours(0, 0, 0, 0)), now];
+    case "This month":
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      return [startOfMonth, now];
+    default:
+      break;
+  }
+}
 
+export default function DatePicker({
+  value,
+  setValue,
+  option,
+  setOption
+}: {
+  value: any;
+  setValue: any;
+  option: any;
+  setOption: any;
+}) {
   function setDates(option: Options) {
-    const now = new Date();
-    switch (option) {
-      case "30 min":
-        setValue([new Date(now.getTime() - 30 * 60 * 1000), now]);
-        break;
-      case "1 hour":
-        setValue([new Date(now.getTime() - 60 * 60 * 1000), now]);
-        break;
-      case "6 hours":
-        setValue([new Date(now.getTime() - 6 * 60 * 60 * 1000), now]);
-        break;
-      case "12 hours":
-        setValue([new Date(now.getTime() - 12 * 60 * 60 * 1000), now]);
-        break;
-      case "Today":
-        setValue([new Date(now.setHours(0, 0, 0, 0)), new Date()]);
-        break;
-      case "Yesterday":
-        const yesterday = new Date(now);
-        yesterday.setDate(now.getDate() - 1);
-        setValue([
-          new Date(yesterday.setHours(0, 0, 0, 0)),
-          new Date(yesterday.setHours(23, 59, 59, 999))
-        ]);
-        break;
-      case "This week":
-        const startOfWeek = new Date(now);
-        startOfWeek.setDate(now.getDate() - now.getDay());
-        setValue([new Date(startOfWeek.setHours(0, 0, 0, 0)), now]);
-        break;
-      case "This month":
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        setValue([startOfMonth, now]);
-        break;
-      default:
-        break;
-    }
+    setValue(CalculateDate(option));
   }
 
   return (
@@ -84,8 +80,9 @@ export default function DatePicker({
         flexDirection: "column",
         gap: "16px",
         position: "fixed",
-        right: 0,
-        top: 64
+        left: 0,
+        top: 64,
+        zIndex: 10
       }}
     >
       <FormControl fullWidth>

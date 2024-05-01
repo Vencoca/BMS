@@ -8,15 +8,16 @@ import { IGraph } from "@/models/graph";
 
 export async function POST(req: NextRequest) {
   try {
-    const { graph }: { graph: IGraph } = await req.json();
+    const { graph, from, to }: { graph: IGraph; from: "string"; to: "string" } =
+      await req.json();
     connectToMongoDB();
     const endpoint = await fetchEndpoint(graph.endpoint);
     const data = await getDataFromEndpoint({
       endpoint: endpoint,
       // from: "2024-03-17T12:29:24.826Z",
       // to: "2024-03-18T12:29:24.826Z",
-      from: new Date(Date.now() - 24 * 60 * 60 * 1000),
-      to: new Date(),
+      from: new Date(from),
+      to: new Date(to),
       numberOfItems: graph.numberOfPoints,
       aggregationOperation: graph.aggregationMethod,
       measurementName: graph.measurement

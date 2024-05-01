@@ -52,18 +52,4 @@ export async function updateDashboard(
   }
 }
 
-export async function deleteDashboard(
-  id: mongoose.Types.ObjectId
-): Promise<IDashboard> {
-  try {
-    const dashboard = await Dashboard.findByIdAndDelete(id, {
-      new: true
-    }).exec();
-    if (!dashboard) {
-      throw new Error("Dashboard not found");
-    }
-    return dashboard;
-  } catch (error) {
-    throw new Error(`Error deleting dashboard: ${(error as Error).message}`);
-  }
-}
+

@@ -2,7 +2,6 @@ import "@/app/globals.css";
 
 import { CssBaseline } from "@mui/material";
 import type { Metadata } from "next";
-import Head from "next/head";
 
 import { AuthContext } from "@/components/context/AuthContext";
 import { NavCtxProvider } from "@/components/context/NavContext";
@@ -21,9 +20,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <Head>
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
-      </Head>
       <CssBaseline />
       <body>
         <AuthContext>

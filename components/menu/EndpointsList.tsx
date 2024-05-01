@@ -40,7 +40,7 @@ export default function EndpointsList() {
                 endpoint && (
                   <ListItem key={endpoint._id} disablePadding>
                     <ListItemButton
-                      href={`/endpoints/${endpoint._id}`}
+                      href={`/endpoint/${endpoint._id}`}
                       component={Link}
                       sx={{
                         width: "100%",

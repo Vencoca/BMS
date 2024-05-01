@@ -19,7 +19,6 @@ import {
 } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
-import Link from "@mui/material/Link";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
@@ -68,20 +67,6 @@ export default function Nav() {
           >
             <MenuIcon />
           </IconButton>
-          <Link href={"/"} component={NextLink}>
-            <Box sx={{ display: "flex", alignItems: "flex-end" }}>
-              <Image
-                src="/iconWhite.png"
-                alt="facilitIQ"
-                width={32}
-                height={32}
-                style={{ height: "100%", width: "auto", objectFit: "contain" }}
-              ></Image>
-              <Typography variant="h6" color={"white"}>
-                FacilitIQ
-              </Typography>
-            </Box>
-          </Link>
           <Box
             sx={{
               display: "flex",
@@ -129,10 +114,33 @@ export default function Nav() {
             sx={{
               display: "flex",
               width: "100%",
-              justifyContent: "flex-end",
+              justifyContent: "space-between",
+              alignItems: "center",
               mb: 1
             }}
           >
+            <ListItemButton
+              href={"/"}
+              component={NextLink}
+              sx={{ height: "max-content" }}
+            >
+              <Box sx={{ display: "flex", alignItems: "flex-end" }}>
+                <Image
+                  src="/icon.png"
+                  alt="facilitIQ"
+                  width={32}
+                  height={32}
+                  style={{
+                    height: "100%",
+                    width: "auto",
+                    objectFit: "contain"
+                  }}
+                ></Image>
+                <Typography variant="h6" color={"black"}>
+                  FacilitIQ
+                </Typography>
+              </Box>
+            </ListItemButton>
             <IconButton
               size="large"
               color="inherit"

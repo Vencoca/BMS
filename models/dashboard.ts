@@ -3,6 +3,9 @@ import mongoose, { Document, models, Schema } from "mongoose";
 export interface IDashboard extends Document {
   name: string;
   icon: string;
+  dataOption: string;
+  from: Date;
+  to: Date;
 }
 
 const DashboardSchema = new Schema<IDashboard>(
@@ -13,6 +16,15 @@ const DashboardSchema = new Schema<IDashboard>(
     },
     icon: {
       type: String
+    },
+    dataOption: {
+      type: String
+    },
+    from: {
+      type: Date
+    },
+    to: {
+      type: Date
     }
   },
   { timestamps: true }

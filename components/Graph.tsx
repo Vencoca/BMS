@@ -6,7 +6,15 @@ import { useEffect, useState } from "react";
 
 import { IGraph } from "@/models/graph";
 
-export default function Graph({ graph }: { graph: Partial<IGraph> }) {
+export default function Graph({
+  graph,
+  from,
+  to
+}: {
+  graph: Partial<IGraph>;
+  from: Date | null;
+  to: Date | null;
+}) {
   const [graphData, setGraphData] = useState();
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -17,11 +25,25 @@ export default function Graph({ graph }: { graph: Partial<IGraph> }) {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ graph: graph })
+          body: JSON.stringify({
+            graph: graph,
+            from: from,
+            to: to
+          })
         });
         const resJson = await res.json();
         if (res.ok) {
-          setGraphData(resJson.data);
+          const data = resJson.data;
+          const newData = data.map(
+            (item: { timestamp: string | number | Date; value: any }) => {
+              return {
+                ...item,
+                timestamp: new Date(item.timestamp),
+                value: Number(item.value)
+              };
+            }
+          );
+          setGraphData(newData);
         } else {
           throw new Error(resJson.message);
         }
@@ -31,8 +53,10 @@ export default function Graph({ graph }: { graph: Partial<IGraph> }) {
         setLoading(false);
       }
     };
-    fetchData();
-  }, [graph]);
+    if (from && to) {
+      fetchData();
+    }
+  }, [from, graph, to]);
 
   if (loading || !graphData) {
     return (
@@ -54,7 +78,7 @@ export default function Graph({ graph }: { graph: Partial<IGraph> }) {
       <LineChart
         xAxis={[
           {
-            scaleType: "point",
+            scaleType: "time",
             dataKey: "timestamp"
           }
         ]}

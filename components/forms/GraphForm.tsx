@@ -28,6 +28,9 @@ interface Form {
   aggregationMethod: string;
   name: string;
   dashboard: IDashboard["_id"];
+  yAxis: string;
+  xAxis: string;
+  variant: string;
 }
 
 export default function GraphForm({
@@ -57,13 +60,16 @@ export default function GraphForm({
       endpoint: graph?.endpoint || "",
       numberOfPoints: graph?.numberOfPoints || 0,
       aggregationMethod: graph?.aggregationMethod || "",
+      yAxis: graph?.yAxis || "",
+      xAxis: graph?.xAxis || "",
+      variant: graph?.variant || "Line",
       dashboard: dashboardId
     },
     mode: "onBlur"
   });
 
   let endpointWatch = watch("endpoint") as any;
-
+  const variants = ["Line", "Bar", "Table"];
   const handleClose = () => {
     setOpen(false);
   };
@@ -182,6 +188,9 @@ export default function GraphForm({
           <Skeleton variant="rectangular" width={"100%"} height={56} />
           <Skeleton variant="rectangular" width={"100%"} height={56} />
           <Skeleton variant="rectangular" width={"100%"} height={56} />
+          <Skeleton variant="rectangular" width={"100%"} height={56} />
+          <Skeleton variant="rectangular" width={"100%"} height={56} />
+          <Skeleton variant="rectangular" width={"100%"} height={56} />
           <Button
             type="submit"
             variant="contained"
@@ -248,6 +257,68 @@ export default function GraphForm({
               />
             )}
           />
+          <Controller
+            name="xAxis"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                error={errors["xAxis"] && true}
+                label={errors["xAxis"]?.message || "xAxis label"}
+                variant="outlined"
+              />
+            )}
+          />
+          <Controller
+            name="yAxis"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                error={errors["yAxis"] && true}
+                label={errors["yAxis"]?.message || "yAxis label"}
+                variant="outlined"
+              />
+            )}
+          />
+          <Controller
+            name="variant"
+            control={control}
+            rules={{
+              required: { value: true, message: "Variant is required!" }
+            }}
+            render={({ field }) => (
+              <FormControl fullWidth sx={{ maxWidth: "280px" }}>
+                <InputLabel id="variant" error={errors["variant"] && true}>
+                  {errors["variant"]?.message || ("Variant" as any)}
+                </InputLabel>
+                <Select
+                  labelId="variant"
+                  error={errors["variant"] && true}
+                  label={errors["variant"]?.message || ("Variant" as any)}
+                  {...field}
+                >
+                  {variants.map((variant, index) => (
+                    <MenuItem
+                      key={index}
+                      value={variant}
+                      sx={{
+                        width: "280px",
+                        textOverflow: "ellipsis",
+                        maxWidth: "280px",
+                        textWrap: "nowrap",
+                        overflow: "hidden",
+                        display: "block"
+                      }}
+                    >
+                      {variant}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          />
+
           <Controller
             name="numberOfPoints"
             control={control}

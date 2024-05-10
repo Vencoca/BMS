@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
+import Logger from "@/lib/logger";
 import { IDashboard } from "@/models/dashboard";
 import { IEndpoint } from "@/models/endpoint";
 import { IGraph } from "@/models/graph";
@@ -142,7 +143,7 @@ export default function GraphForm({
           throw new Error("Error fetching endpoint: ", resJson.message);
         }
       } catch (error) {
-        console.error("Error fetching endpoitns:", error);
+        Logger.debug("Error fetching endpoitns:", error);
       } finally {
         setFetching(false);
       }
@@ -163,7 +164,7 @@ export default function GraphForm({
           throw new Error("Error fetching dashboards: ", resJson.message);
         }
       } catch (error) {
-        console.error(error);
+        Logger.debug(error);
       } finally {
         setFetching(false);
       }

@@ -6,6 +6,7 @@ import NextLink from "next/link";
 import { useEffect, useState } from "react";
 
 import GraphForm from "@/components/forms/GraphForm";
+import Logger from "@/lib/logger";
 import { IGraph } from "@/models/graph";
 
 type dashboardProps = {
@@ -31,7 +32,7 @@ export default function Dashboard({ params }: dashboardProps) {
           throw new Error("Error getting graph: ", resJson.message);
         }
       } catch (error) {
-        console.error(error);
+        Logger.debug(error);
       }
     };
     fetchGraph();

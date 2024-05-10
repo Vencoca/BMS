@@ -6,6 +6,16 @@ import { IUser } from "@/models/user";
 
 import { createDashboard } from "./dashboard";
 
+export async function fetchDashboardUsers() {
+  try {
+    return await DashboardUser.find({});
+  } catch (error) {
+    throw new Error(
+      `Error fetching dashboard users: ${(error as Error).message}`
+    );
+  }
+}
+
 export async function fetchAllDashboardsForUser(
   user: IUser
 ): Promise<IDashboard[] | null> {

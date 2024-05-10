@@ -20,6 +20,8 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
+import Logger from "@/lib/logger";
+
 import { useUserContext } from "../context/UserContext";
 
 export default function EndpointSettings({
@@ -59,10 +61,10 @@ export default function EndpointSettings({
           return endpoints!.filter((item) => item._id !== endpointId);
         });
       } else {
-        console.log("Something went wrong");
+        Logger.debug("Something went wrong");
       }
     } catch (error) {
-      console.log(error);
+      Logger.debug(error);
     }
   };
 

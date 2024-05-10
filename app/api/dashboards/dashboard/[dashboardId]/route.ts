@@ -23,7 +23,6 @@ export async function GET(req: NextRequest, { params }: dashboardProps) {
 
 export async function PUT(req: NextRequest, { params }: dashboardProps) {
   const { dashboard } = await req.json();
-  console.log(dashboard);
   try {
     await connectToMongoDB();
     const updatedDashboard = await updateDashboard(

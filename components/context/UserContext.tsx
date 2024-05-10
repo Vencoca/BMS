@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import { createContext, useContext, useEffect, useState } from "react";
 
+import Logger from "@/lib/logger";
 import { IDashboard } from "@/models/dashboard";
 import { IEndpoint } from "@/models/endpoint";
 import { IUser } from "@/models/user";
@@ -49,7 +50,7 @@ export const UserCtxProvider = ({ children }: { children: any }) => {
           }
         }
       } catch (error) {
-        console.error("Error fetching user:", error);
+        Logger.debug("Error fetching user:", error);
       }
     };
     if (user?.email !== session?.user?.email && session?.user?.email) {
@@ -74,7 +75,7 @@ export const UserCtxProvider = ({ children }: { children: any }) => {
           throw new Error("Error setting dashboards: ", resJson.message);
         }
       } catch (error) {
-        console.error("Error fetching dashboards:", error);
+        Logger.debug("Error fetching dashboards:", error);
       }
     };
     if (user != null) {
@@ -99,7 +100,7 @@ export const UserCtxProvider = ({ children }: { children: any }) => {
           throw new Error("Error setting dashboards: ", resJson.message);
         }
       } catch (error) {
-        console.error("Error fetching dashboards:", error);
+        Logger.debug("Error fetching dashboards:", error);
       }
     };
     if (user != null) {

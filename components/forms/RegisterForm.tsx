@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
+import Logger from "@/lib/logger";
+
 interface Form {
   email: string;
   password: string;
@@ -58,7 +60,7 @@ export default function RegisterFrom() {
         setOpen(true);
       }
     } catch (error) {
-      console.error("Error during registration:", error);
+      Logger.debug("Error during registration:", error);
     }
     setRegistering(false);
   };

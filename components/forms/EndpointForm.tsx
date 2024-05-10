@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
+import Logger from "@/lib/logger";
 import { IEndpoint } from "@/models/endpoint";
 
 import { useUserContext } from "../context/UserContext";
@@ -88,10 +89,10 @@ export default function EndpointForm({ endpoint }: { endpoint?: IEndpoint }) {
           return endpoints;
         });
       } else {
-        console.log("Something went wrong");
+        Logger.debug("Something went wrong");
       }
     } catch (error) {
-      console.log(error);
+      Logger.debug(error);
     }
   };
 
@@ -297,7 +298,8 @@ export default function EndpointForm({ endpoint }: { endpoint?: IEndpoint }) {
             <DialogContent>
               <DialogContentText>
                 Do you really want to edit this endpoint it may harm already
-                created graphs if you changed the url! Proceed with caution!
+                created graphs if you changed the url! Consider creating new
+                endpoint instead. Proceed with caution!
               </DialogContentText>
             </DialogContent>
             <DialogActions>

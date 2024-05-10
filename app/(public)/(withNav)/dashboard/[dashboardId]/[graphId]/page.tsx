@@ -31,7 +31,7 @@ export default function Dashboard({ params }: dashboardProps) {
           throw new Error("Error getting graph: ", resJson.message);
         }
       } catch (error) {
-        console.error(error);
+        Logger.debug(error);
       }
     };
     fetchGraph();

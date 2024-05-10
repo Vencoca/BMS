@@ -109,7 +109,7 @@ export default function Nav() {
           keepMounted: true
         }}
       >
-        <List sx={{ minWidth: 200 }}>
+        <List sx={{ minWidth: 200, maxWidth: 400 }}>
           <Box
             sx={{
               display: "flex",
@@ -189,7 +189,8 @@ export default function Nav() {
           width: "100vw",
           height: "100vh",
           objectFit: "cover",
-          position: "fixed"
+          position: "fixed",
+          zIndex: "-1"
         }}
         src="/loginBackground.jpg"
         alt="Building"

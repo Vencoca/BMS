@@ -5,12 +5,15 @@ import User from "@/models/user";
 
 import usersMock from "../mocks/users.json";
 import {
+  comparePasswordWithUserPassword,
   createUser,
+  createUserWithHashedPassword,
   deleteUser,
   fetchUser,
   fetchUserByEmail,
   fetchUsers,
   updateUser,
+  userExists
 } from "../user";
 import seedDB from "./seedDB";
 
@@ -39,7 +42,7 @@ describe("Users methods tests", () => {
         throw new Error("MongoDB connection error");
       });
       await expect(fetchUsers()).rejects.toThrow(
-        "Error fetching users: MongoDB connection error",
+        "Error fetching users: MongoDB connection error"
       );
     });
   });
@@ -59,7 +62,7 @@ describe("Users methods tests", () => {
       const nonExistingUserId = new mongoose.Types.ObjectId();
 
       await expect(fetchUser(nonExistingUserId)).rejects.toThrow(
-        "User not found",
+        "User not found"
       );
     });
   });
@@ -79,7 +82,7 @@ describe("Users methods tests", () => {
       const nonExistingUserEmail = "nonexistinguser@example.com";
 
       await expect(fetchUserByEmail(nonExistingUserEmail)).rejects.toThrow(
-        "User not found",
+        "User not found"
       );
     });
   });
@@ -89,7 +92,7 @@ describe("Users methods tests", () => {
       const newUser = {
         name: "New User",
         email: "newuser@example.com",
-        password: "password123",
+        password: "password123"
       };
 
       const createdUser = await createUser(newUser);
@@ -101,11 +104,11 @@ describe("Users methods tests", () => {
 
     test("Error creating user (incomplete data)", async () => {
       const invalidUser = {
-        name: "Invalid User",
+        name: "Invalid User"
       };
 
       await expect(createUser(invalidUser)).rejects.toThrow(
-        "Error creating user: User validation failed: email: Path `email` is required.",
+        "Error creating user: User validation failed: email: Path `email` is required."
       );
     });
   });
@@ -127,7 +130,7 @@ describe("Users methods tests", () => {
       const updates = { name: "Updated Name" };
 
       await expect(updateUser(nonExistingUserId, updates)).rejects.toThrow(
-        "User not found",
+        "User not found"
       );
     });
   });
@@ -145,8 +148,71 @@ describe("Users methods tests", () => {
     test("Error deleting nonexisting user", async () => {
       const nonExistingUserId = new mongoose.Types.ObjectId();
       await expect(deleteUser(nonExistingUserId)).rejects.toThrow(
-        "User not found",
+        "User not found"
       );
+    });
+  });
+  describe("createUserWithHashedPassword", () => {
+    test("Create user", async () => {
+      const newUser = {
+        name: "New User",
+        email: "newuser2@example.com",
+        password: "password123"
+      };
+
+      const createdUser = await createUserWithHashedPassword(newUser);
+
+      expect(createdUser).toBeDefined();
+      expect(createdUser.name).toBe(newUser.name);
+      expect(createdUser.email).toBe(newUser.email);
+      expect(createdUser.password).not.toBe(newUser.password);
+    });
+    test("Error creating user (incomplete data)", async () => {
+      const invalidUser = {
+        name: "Invalid User"
+      };
+
+      await expect(createUserWithHashedPassword(invalidUser)).rejects.toThrow(
+        "Error creating user: Illegal arguments: undefined, number"
+      );
+    });
+  });
+  describe("comparePasswordWithUserPassword", () => {
+    test("Comparison with user", async () => {
+      const newUser = {
+        name: "New User",
+        email: "newuser2@example.com"
+      };
+      const compare = await comparePasswordWithUserPassword(
+        newUser,
+        "password123"
+      );
+      expect(compare).toBeTruthy();
+    });
+    test("Comparison with user password", async () => {
+      const newUser = {
+        password: "password123"
+      };
+      const compare = await comparePasswordWithUserPassword(
+        newUser,
+        "password123"
+      );
+      expect(compare).toBeFalsy();
+    });
+    test("No email", async () => {
+      const newUser = {
+        name: "New User"
+      };
+      await expect(
+        comparePasswordWithUserPassword(newUser, "password123")
+      ).rejects.toThrow("Error comparing password: no email provided");
+    });
+  });
+
+  describe("userExist", () => {
+    test("Test if user exist", async () => {
+      const user = await userExists("newuser2@example.com");
+      expect(user).toBeDefined();
     });
   });
 });

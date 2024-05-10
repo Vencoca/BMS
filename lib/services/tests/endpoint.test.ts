@@ -7,6 +7,7 @@ import {
   createEndpoint,
   deleteEndpoint,
   fetchEndpoint,
+  fetchEndpointByUrl,
   fetchEndpoints,
   updateEndpoint
 } from "../endpoint";
@@ -86,6 +87,19 @@ describe("Endpoints methods tests", () => {
 
       await expect(createEndpoint(invalidEndpoint)).rejects.toThrow(
         "Error creating endpoint: You have to define apiKey!"
+      );
+    });
+  });
+
+  describe("fetchEndpointByUrl", () => {
+    test("Endpoint exist", async () => {
+      const endpoint = await fetchEndpointByUrl("https://newendpoint.com");
+      expect(endpoint).toBeDefined();
+    });
+    test("Error", async () => {
+      // @ts-ignore
+      await expect(fetchEndpointByUrl({})).rejects.toThrow(
+        "Error fetching Endpoint"
       );
     });
   });

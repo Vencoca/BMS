@@ -145,6 +145,27 @@ describe("EndpointUser methods tests", () => {
       spy.mockRestore();
     });
 
+    test("Test no endpoint", async () => {
+      const user = testData.get("users")[0] as IUser;
+      const endpoint = {
+        url: "https://api.example.com/endpoint4",
+        apiKey: "s3cr3t4",
+        name: "test"
+      } as IEndpoint;
+      const spy = jest.spyOn(workWithEndpointHelper, "getEndpointSpecs");
+      const mockedReturnValue = Promise.resolve(false) as any;
+      spy.mockReturnValue(mockedReturnValue);
+
+      await expect(
+        createEndpointAndPairItWithUser({
+          user,
+          endpoint
+        })
+      ).rejects.toThrow("Error creating endpoint for user");
+
+      spy.mockRestore();
+    });
+
     test("Error creating endpoint for user", async () => {
       const user = {
         // Missing required fields

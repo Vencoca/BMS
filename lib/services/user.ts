@@ -77,7 +77,7 @@ export async function comparePasswordWithUserPassword(
     }
     return await bcrypt.compare(passwordToCompare, password);
   } catch (error) {
-    throw new Error(`Error comparing passwords: ${(error as Error).message}`);
+    throw new Error(`${(error as Error).message}`);
   }
 }
 

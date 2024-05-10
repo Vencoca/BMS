@@ -27,6 +27,7 @@ import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import Logger from "@/lib/logger";
 import { IDashboard } from "@/models/dashboard";
 
 import { useNavContext } from "../context/NavContext";
@@ -73,12 +74,12 @@ export default function DashboardSettings({
           })
         });
         if (res.ok) {
-          console.log("Update layout done");
+          Logger.debug("Update layout done");
         } else {
-          console.log("Something went wrong");
+          Logger.debug("Something went wrong");
         }
       } catch (error) {
-        console.log(error);
+        Logger.debug(error);
       }
 
       data.current.layout = null;
@@ -127,10 +128,10 @@ export default function DashboardSettings({
         });
         setDialogNameOpen(false);
       } else {
-        console.log("Something went wrong");
+        Logger.debug("Something went wrong");
       }
     } catch (error) {
-      console.log(error);
+      Logger.debug(error);
     }
   };
 
@@ -148,10 +149,10 @@ export default function DashboardSettings({
         });
         router.replace(`/dashboard`);
       } else {
-        console.log("Something went wrong");
+        Logger.debug("Something went wrong");
       }
     } catch (error) {
-      console.log(error);
+      Logger.debug(error);
     }
   };
 

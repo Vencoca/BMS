@@ -14,11 +14,11 @@ export default function AuthCard({ children }: { children?: ReactNode }) {
         display: "flex",
         flexDirection: "column",
         gap: "16px",
-        margin: "32px",
+        margin: "32px"
       }}
     >
       <Typography variant="h3" component="h1" textAlign={"center"}>
-        BMS
+        FacilitIQ
       </Typography>
       {children}
       <Divider>OR</Divider>

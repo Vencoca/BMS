@@ -15,6 +15,7 @@ import {
 import { BarChart, LineChart } from "@mui/x-charts";
 import { useEffect, useState } from "react";
 
+import Logger from "@/lib/logger";
 import { IGraph } from "@/models/graph";
 
 export default function Graph({
@@ -63,7 +64,7 @@ export default function Graph({
           throw new Error(resJson.message);
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        Logger.debug("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
@@ -78,8 +79,6 @@ export default function Graph({
       <Skeleton width={"90%"} height={"100%"} sx={{ ml: 2, mr: 2 }}></Skeleton>
     );
   }
-
-  console.log(graph);
   return (
     <Box
       sx={{

@@ -29,7 +29,7 @@ export async function fetchEndpointByUrl(url: IEndpoint["url"]) {
     const endpoint = await Endpoint.findOne({ url });
     return endpoint;
   } catch (error) {
-    throw new Error(`Error fetching Endpoint: ${(error as Error).message}`);
+    throw new Error(`Error fetching Endpoint`);
   }
 }
 

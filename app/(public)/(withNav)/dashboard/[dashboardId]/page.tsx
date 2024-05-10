@@ -27,6 +27,7 @@ import { useUserContext } from "@/components/context/UserContext";
 import DatePicker, { CalculateDate } from "@/components/DatePicker";
 import Graph from "@/components/Graph";
 import DashboardSettings from "@/components/menu/DashboardSettings";
+import Logger from "@/lib/logger";
 import { IDashboard } from "@/models/dashboard";
 import { IGraph } from "@/models/graph";
 
@@ -69,7 +70,7 @@ export default function Dashboard({ params }: dashboardProps) {
           throw new Error("Error setting dashboards: ", resJson.message);
         }
       } catch (error) {
-        console.error("Error fetching dashboards:", error);
+        Logger.error("Error fetching dashboards:", error);
       }
     };
     fetchGraphs();
@@ -80,7 +81,6 @@ export default function Dashboard({ params }: dashboardProps) {
     const dashboard = dashboards?.find(
       (dash) => dash._id === params.dashboardId
     );
-    console.log(dashboard);
     if (dashboard) {
       setOption(dashboard?.dataOption || "Today");
       setValue(
@@ -114,12 +114,12 @@ export default function Dashboard({ params }: dashboardProps) {
           })
         });
         if (res.ok) {
-          console.log("Update layout done");
+          Logger.debug("Update layout done");
         } else {
-          console.log("Something went wrong");
+          Logger.debug("Something went wrong");
         }
       } catch (error) {
-        console.log(error);
+        Logger.debug(error);
       }
 
       data.current.layout = null;
@@ -156,10 +156,10 @@ export default function Dashboard({ params }: dashboardProps) {
           return dashboards;
         });
       } else {
-        console.log("Something went wrong");
+        Logger.debug("Something went wrong");
       }
     } catch (error) {
-      console.log(error);
+      Logger.debug(error);
     }
   }
 
@@ -186,7 +186,7 @@ export default function Dashboard({ params }: dashboardProps) {
         throw new Error("Error deleting graph: ", resJson.message);
       }
     } catch (error) {
-      console.error(error);
+      Logger.debug(error);
     }
   }
 

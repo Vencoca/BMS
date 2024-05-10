@@ -23,6 +23,8 @@ const customJestConfig = {
     "/models/endpointUser\\.ts$",
     "/models/graph\\.ts$",
     "/models/user\\.ts$",
+    "/models/dashboard\\.ts$",
+    "/models/dashboardUser\\.ts$",
   ]
 };
 

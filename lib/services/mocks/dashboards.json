@@ -1,0 +1,12 @@
+[
+  {
+    "name": "dashboard1",
+    "dataOption": "Today"
+  },
+  {
+    "name": "dashboard1",
+    "dataOption": "Custom",
+    "from": "2024-01-01T00:00:00Z",
+    "to": "2024-01-02T00:00:00Z"
+  }
+]

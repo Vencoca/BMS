@@ -1,0 +1,18 @@
+[
+  {
+    "numberOfPoints": 2,
+    "measurement": "temperature",
+    "aggregationMethod": "$avg",
+    "name": "Power",
+    "variant": "Bar"
+  },
+  {
+    "numberOfPoints": 5,
+    "measurement": "power",
+    "aggregationMethod": "$avg",
+    "name": "Power",
+    "variant": "Bar",
+    "xAxis": "Time",
+    "yAxis": "W"
+  }
+]

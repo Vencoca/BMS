@@ -96,7 +96,9 @@ export default function Graph({
           position: "absolute",
           top: 5,
           left: "50%",
-          transform: "translateX(-50%)"
+          transform: "translateX(-50%)",
+          width: "100%",
+          textAlign: "center"
         }}
       >
         {graph.name}

@@ -21,10 +21,10 @@ export default function Home() {
         flexDirection={"column"}
         gap={"16px"}
       >
-        <Typography variant="h3" component="h1">
+        <Typography variant="h3" component="h1" textAlign={"center"}>
           Welcome to FacilitIQ
         </Typography>
-        <Typography variant="body1" component="p">
+        <Typography variant="body1" component="p" textAlign={"center"}>
           To continue into creating dashboard click{" "}
           <Link href="/dashboard" component={NextLink} underline="hover">
             {"here"}

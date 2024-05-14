@@ -70,7 +70,7 @@ export default function GraphForm({
   });
 
   let endpointWatch = watch("endpoint") as any;
-  const variants = ["Line", "Bar", "Table"];
+  const variants = ["Line", "Bar", "Table", "GraphAndTable"];
   const handleClose = () => {
     setOpen(false);
   };

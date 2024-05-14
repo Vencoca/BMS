@@ -18,6 +18,8 @@ import { useEffect, useState } from "react";
 import Logger from "@/lib/logger";
 import { IGraph } from "@/models/graph";
 
+import GraphAndTable from "./GraphAndTable";
+
 export default function Graph({
   graph,
   from,
@@ -79,6 +81,7 @@ export default function Graph({
       <Skeleton width={"90%"} height={"100%"} sx={{ ml: 2, mr: 2 }}></Skeleton>
     );
   }
+
   return (
     <Box
       sx={{
@@ -148,8 +151,12 @@ export default function Graph({
           </TableContainer>
         </Paper>
       )}
+      {graph.variant === "GraphAndTable" && (
+        <GraphAndTable graph={graph} graphData={graphData}></GraphAndTable>
+      )}
       {(!graph.variant || graph.variant === "Line") && (
         <LineChart
+          sx={{ cursor: "pointer" }}
           xAxis={[
             {
               scaleType: "time",
@@ -160,7 +167,7 @@ export default function Graph({
           yAxis={[{ label: graph.yAxis }]}
           series={[{ dataKey: "value" }]}
           dataset={graphData}
-        />
+        ></LineChart>
       )}
     </Box>
   );

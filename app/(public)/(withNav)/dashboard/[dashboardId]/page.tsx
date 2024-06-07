@@ -16,7 +16,9 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
-  Paper
+  Link,
+  Paper,
+  Typography
 } from "@mui/material";
 import NextLink from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -67,7 +69,7 @@ export default function Dashboard({ params }: dashboardProps) {
           setGraphs(resJson.graphs);
           data.current.graphs = resJson.graphs;
         } else {
-          throw new Error("Error setting dashboards: ", resJson.message);
+          throw new Error("Error setting graphs: ", resJson.message);
         }
       } catch (error) {
         Logger.error("Error fetching dashboards:", error);
@@ -215,71 +217,98 @@ export default function Dashboard({ params }: dashboardProps) {
           ></DatePicker>
         </>
       )}
-      <ResponsiveGridLayout
-        className="layout"
-        cols={{ lg: 12, md: 8, sm: 6, xs: 4, xxs: 2 }}
-        width={1920}
-        isDraggable={editable}
-        isResizable={editable}
-        onLayoutChange={(layout: Layout[]) => {
-          if (editable) {
-            data.current.layout = layout;
-          }
-        }}
-      >
-        {graphs.map((graph, id) => (
+
+      {graphs.length === 0 ? (
+        <Box
+          width={"100%"}
+          height={"calc(100vh - 64px)"}
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+        >
           <Box
-            key={id}
-            sx={{ backgroundColor: "white", position: "relative" }}
-            data-grid={
-              graph?.layout ? graph.layout : { x: 0, y: 0, w: 12, h: 2 }
-            }
+            bgcolor={"white"}
+            padding="32px"
+            display={"flex"}
+            flexDirection={"column"}
+            gap={"16px"}
           >
-            {editable && (
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: 1,
-                  right: 0,
-                  zIndex: 9
-                }}
-              >
-                <IconButton
-                  size="small"
-                  color="inherit"
-                  aria-label="Edit graph"
-                  onMouseDown={stopPropagation}
-                  onTouchStart={stopPropagation}
-                  sx={{ mr: 1 }}
-                  href={`./${graph._id}`}
-                  component={NextLink}
-                >
-                  <EditIcon fontSize="small"></EditIcon>
-                </IconButton>
-                <IconButton
-                  size="small"
-                  color="inherit"
-                  aria-label="Delete graph"
-                  sx={{ mr: 1 }}
-                  onMouseDown={stopPropagation}
-                  onTouchStart={stopPropagation}
-                  onClick={() => {
-                    graphToBeDeleted.current.id = graph._id;
-                    setDialogOpen(true);
+            <Typography variant="body1" component="p" textAlign={"center"}>
+              To continue, click{" "}
+              <Link href="./graph" component={NextLink} underline="hover">
+                {"here"}
+              </Link>{" "}
+              to add an graph.
+            </Typography>
+          </Box>
+        </Box>
+      ) : (
+        <ResponsiveGridLayout
+          className="layout"
+          cols={{ lg: 12, md: 8, sm: 6, xs: 4, xxs: 2 }}
+          width={1920}
+          isDraggable={editable}
+          isResizable={editable}
+          onLayoutChange={(layout: Layout[]) => {
+            if (editable) {
+              data.current.layout = layout;
+            }
+          }}
+        >
+          {graphs.map((graph, id) => (
+            <Box
+              key={id}
+              sx={{ backgroundColor: "white", position: "relative" }}
+              data-grid={
+                graph?.layout ? graph.layout : { x: 0, y: 0, w: 12, h: 2 }
+              }
+            >
+              {editable && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: 1,
+                    right: 0,
+                    zIndex: 9
                   }}
                 >
-                  <DeleteIcon fontSize="small"></DeleteIcon>
-                </IconButton>
-              </Box>
-            )}
-            <Graph
-              graph={graph}
-              from={value ? value[0] : null}
-              to={value ? value[1] : null}
-            ></Graph>
-          </Box>
-        ))}
-      </ResponsiveGridLayout>
+                  <IconButton
+                    size="small"
+                    color="inherit"
+                    aria-label="Edit graph"
+                    onMouseDown={stopPropagation}
+                    onTouchStart={stopPropagation}
+                    sx={{ mr: 1 }}
+                    href={`./${graph._id}`}
+                    component={NextLink}
+                  >
+                    <EditIcon fontSize="small"></EditIcon>
+                  </IconButton>
+                  <IconButton
+                    size="small"
+                    color="inherit"
+                    aria-label="Delete graph"
+                    sx={{ mr: 1 }}
+                    onMouseDown={stopPropagation}
+                    onTouchStart={stopPropagation}
+                    onClick={() => {
+                      graphToBeDeleted.current.id = graph._id;
+                      setDialogOpen(true);
+                    }}
+                  >
+                    <DeleteIcon fontSize="small"></DeleteIcon>
+                  </IconButton>
+                </Box>
+              )}
+              <Graph
+                graph={graph}
+                from={value ? value[0] : null}
+                to={value ? value[1] : null}
+              ></Graph>
+            </Box>
+          ))}
+        </ResponsiveGridLayout>
+      )}
       <Dialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}

@@ -3,7 +3,10 @@
 import { Box, Link, Typography } from "@mui/material";
 import NextLink from "next/link";
 
+import { useUserContext } from "@/components/context/UserContext";
+
 export default function Home() {
+  const { endpoints } = useUserContext();
   return (
     <Box
       position="relative"
@@ -24,12 +27,23 @@ export default function Home() {
         <Typography variant="h3" component="h1" textAlign={"center"}>
           Welcome to FacilitIQ
         </Typography>
-        <Typography variant="body1" component="p" textAlign={"center"}>
-          To continue into creating dashboard click{" "}
-          <Link href="/dashboard" component={NextLink} underline="hover">
-            {"here"}
-          </Link>
-        </Typography>
+        {endpoints ? (
+          <Typography variant="body1" component="p" textAlign={"center"}>
+            To continue, click{" "}
+            <Link href="/dashboard" component={NextLink} underline="hover">
+              {"here"}
+            </Link>{" "}
+            to add a dashboard.
+          </Typography>
+        ) : (
+          <Typography variant="body1" component="p" textAlign={"center"}>
+            To continue, click{" "}
+            <Link href="/endpoint" component={NextLink} underline="hover">
+              {"here"}
+            </Link>{" "}
+            to add an endpoint.
+          </Typography>
+        )}
       </Box>
     </Box>
   );

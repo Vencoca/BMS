@@ -190,6 +190,7 @@ export default function Nav() {
           height: "100vh",
           objectFit: "cover",
           position: "fixed",
+          top: 0,
           zIndex: "-1"
         }}
         src="/loginBackground.jpg"

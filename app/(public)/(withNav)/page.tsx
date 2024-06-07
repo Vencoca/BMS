@@ -27,21 +27,21 @@ export default function Home() {
         <Typography variant="h3" component="h1" textAlign={"center"}>
           Welcome to FacilitIQ
         </Typography>
-        {endpoints ? (
-          <Typography variant="body1" component="p" textAlign={"center"}>
-            To continue, click{" "}
-            <Link href="/dashboard" component={NextLink} underline="hover">
-              {"here"}
-            </Link>{" "}
-            to add a dashboard.
-          </Typography>
-        ) : (
+        {endpoints?.length === 0 ? (
           <Typography variant="body1" component="p" textAlign={"center"}>
             To continue, click{" "}
             <Link href="/endpoint" component={NextLink} underline="hover">
               {"here"}
             </Link>{" "}
             to add an endpoint.
+          </Typography>
+        ) : (
+          <Typography variant="body1" component="p" textAlign={"center"}>
+            To continue, click{" "}
+            <Link href="/dashboard" component={NextLink} underline="hover">
+              {"here"}
+            </Link>{" "}
+            to add a dashboard.
           </Typography>
         )}
       </Box>

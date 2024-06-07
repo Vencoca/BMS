@@ -10,7 +10,6 @@ export const config = {
     "/api/endpoints/:path*",
     "/api/graphs/:path*",
     "/api/layout/:path*",
-    "/api/users/:path*",
     "/api/workWithEndpoint/:path*"
   ]
 };
